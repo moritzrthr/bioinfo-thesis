@@ -1,16 +1,91 @@
-% Set here the title, authors and other stuff to be used for the cover
-% This file is used by MAIN.TEX
+\documentclass[pdftex,12pt,a4paper]{report}
 
-% set title, authors and stuff for the cover
-\def\Doctype{Bachelor Thesis}
-\def\Lehrstuhl{Lehrstuhl f{\"u}r\\ Bioinformatik}
-\def\Mytitle{A Novel Approach for Finding Black Cats in Black Rooms}
-\def\Author{Der Kleine Bioinformatiker}
-\def\Provider{Prof. Dr. X}
-\def\Supervisor{Dr. Y}
-\def\Deadline{15. Mai 2015}
+\usepackage[pdftex]{graphicx}
+\usepackage[ansinew]{inputenc}
+\usepackage{geometry}
+\usepackage{bbold}
+\geometry{a4paper,left=2.5cm,right=2.5cm, top=2.5cm, bottom=3cm}
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
 
-% text to appear in the footer
-\def\footertext{}
+\begin{document}
+\begin{titlepage}
 
-\fxsetup{status=draft} %set to final for final version. 
+
+%%LR
+\sffamily
+
+\begin{center}
+
+
+% Oberer Teil der Titelseite:
+\includegraphics[width=0.3\textwidth]{logo2.png}
+\hfill
+\includegraphics[width=0.4\textwidth]{logo1.png}  
+\\[5cm]
+
+{\Large Bioinformatics Program}\\[0.5cm]
+{\Large Technical University of Munich}\\[0.5cm]
+{\Large Ludwig-Maximilians-Universit\"at M\"unchen}\\[2cm]
+{\Large Bachelor's Thesis in Bioinformatics}\\[1.5cm]
+
+% Title
+\HRule \\[0.4cm]
+{ \huge \bfseries Expanding De Novo Peptide Sequencing to TMT Proteomics Data including post translational modifications to Uncover Biological Insights Beyond Database-driven Searches }\\[0.4cm]
+
+\HRule \\[1.5cm]
+
+{\Large Moritz Rothhaar}\\[2.5cm]
+
+\vfill
+\end{center}
+\end{titlepage}
+\pagestyle{empty}
+
+
+
+%%LR comprehensive title
+\begin{titlepage}
+{\sffamily
+
+
+\begin{center}
+\includegraphics[width=0.3\textwidth]{logo2.png}
+\hfill
+\includegraphics[width=0.4\textwidth]{logo1.png}  
+\\[3cm]  
+
+
+
+{\Large Bioinformatics Program}\\[0.5cm]
+{\Large Technical University of Munich}\\[0.5cm]
+{\Large Ludwig-Maximilians-Universit\"at M\"unchen}\\[2cm]
+{\Large Bachelor's Thesis in Bioinformatics}\\[2cm]
+{\textbf{\LARGE Expanding De Novo Peptide Sequencing to TMT Proteomics Data including post translational modifications to Uncover Biological Insights Beyond Database-driven Searches}}\\[1cm]
+{\textbf{\LARGE Erweiterung transformerbasierter De-novo-Peptidsequenzierung mit Post-translationalen Modifikationen auf TMT-Proteomdaten zum Erkenntnisgewinn jenseits klassischer Datenbanksuchen}}\\[1cm]
+
+\end{center}
+
+\begin{center}\Large
+  \begin{tabular}{ll}
+    Author:& Moritz Rothhaar\\
+    Supervisor: &  Prof. Dr. Julien Gagneur\\
+    Advisor:        &  Daniela Klaproth-Andrade\\
+    & I29 Chair of Computational Molecular Medicine, TUM, Munich\\
+    Submitted:     &  15.02.2026
+  \end{tabular}
+\end{center}
+
+
+
+}% end title page
+
+\end{titlepage}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% thesis content starts here
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\end{document}
