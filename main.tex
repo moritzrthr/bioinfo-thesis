@@ -25,13 +25,15 @@
 % include commands
 \input{components/commands}
 
+\input{components/glossary}
+
 \addbibresource{bibliography/literature}
 
 %\makeindex
 	%% inter line spacing
 %\linespread{1.0}
 
-\makeglossary
+\makeglossaries
 
 \begin{document}
 
@@ -47,7 +49,7 @@
 	\input{components/kurzzusammenfassung}
 
 	\tableofcontents
-	\listofabbreviations
+	\printglossary[type=\acronymtype,title=List of Abbreviations]
 	\listoffigures
 	\listoftables
   
