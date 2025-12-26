@@ -1,0 +1,37 @@
+\chapter{Background}
+\label{ch:background}
+
+In this chapter, the fundamental principles of mass spectrometry-based proteomics and the computational strategies for peptide identification are discussed. Particular focus is placed on the challenges introduced by chemical labeling and the emergence of deep learning models in \textit{de novo} sequencing.
+
+\section{Mass Spectrometry-Based Proteomics}
+
+\subsection{Bottom-Up Proteomics Workflow}
+Mass spectrometry (MS)-based proteomics is the gold standard for large-scale protein analysis. The "bottom-up" approach is the most widely adopted strategy, where proteins are extracted and enzymatically digested—typically using trypsin—into smaller peptides before analysis \cite{Gevaert2003}. This is essential as peptides are more easily fractionated and ionized than intact proteins. The resulting mixture is separated via liquid chromatography (LC) and ionized using Electrospray Ionization (ESI) \cite{Aebersold2016}.
+
+\subsection{Tandem Mass Spectrometry (MS/MS) and Peptide Fragment Ion Theory}
+Peptide sequences are identified using Tandem Mass Spectrometry (MS/MS). A precursor ion is isolated by its mass-to-charge ratio ($m/z$) and fragmented, often using Higher-energy Collisional Dissociation (HCD) \cite{Steen2004}.
+
+According to fragment ion theory, the peptide backbone fragments primarily at amide bonds, resulting in $b$-ions (N-terminal) and $y$-ions (C-terminal) \cite{Roepstorff2010}. The mass difference between consecutive ions in a series corresponds to specific amino acids. However, post-translational modifications (PTMs) or chemical labels like Tandem Mass Tags (TMT) shift these masses, requiring advanced computational identification.
+
+
+
+\section{Peptide Identification Strategies}
+
+\subsection{Database Search Engines (DBIS)}
+The most common identification method is database searching. Engines like MaxQuant or SEQUEST compare experimental MS/MS spectra against \textit{in silico} digested sequences from databases like UniProt \cite{Cox2008, Eng1994}. While robust, DBIS is limited by the "search space" problem: it cannot identify modifications not explicitly included in the database, leading to missed novel PTMs \cite{Nesvizhskii2010}.
+
+\subsection{Principles of De Novo Peptide Sequencing}
+In contrast, \textit{de novo} sequencing reconstructs sequences directly from fragment ion peaks without a reference database \cite{Taylor1997}. While historically limited by noise, modern Transformer-based models now capture long-range dependencies between ions, making this approach ideal for discovering novel PTMs and variants in the "dark proteome" \cite{Tran2019}.
+
+\section{Tandem Mass Tag (TMT) Labeling}
+
+\subsection{Isobaric Labeling Chemistry}
+Tandem Mass Tag (TMT) labeling is used for high-throughput multiplexed quantification. TMT tags are isobaric, meaning labeled peptides from different samples appear as a single peak in MS1 scans, reducing instrument time and missing values \cite{Thompson2003, Werner2014}.
+
+\subsection{Impact on Fragmentation Patterns}
+TMT tags introduce systematic mass shifts to the N-terminus and lysine side chains. Upon fragmentation, they release reporter ions ($m/z$ 126–135) for quantification \cite{McAlister2014}. For \textit{de novo} sequencing, these tags are challenging because they alter fragmentation efficiency and shift $b$- and $y$-ion series significantly \cite{Hogrebe2018}.
+
+\section{Deep Learning and Transformer Models}
+The identification of peptides is a sequence-to-sequence (Seq2Seq) task. While early models used LSTMs \cite{Tran2019}, the Transformer architecture revolutionized the field with the Self-Attention mechanism \cite{Vaswani2017}. 
+
+In a proteomic context, the Transformer's encoder extracts structural features from continuous $m/z$ and intensity values through point-based encoding \cite{Yilmaz2023}. The decoder then uses Beam Search to maintain a set of the $k$ most likely sequences, ensuring the final result is globally consistent with the precursor mass \cite{Qiao2021}.
