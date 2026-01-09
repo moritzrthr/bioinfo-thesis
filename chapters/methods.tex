@@ -2,3 +2,156 @@
 
 
 
+
+
+\label{ch:methods}
+
+
+
+
+
+
+
+\section{Fine-tuning Strategy and Model Adaptations}
+
+The approach builds upon the Modanovo framework, a transformer-based architecture designed for the identification of post-translational modifications (PTMs) using experimental spectra \cite{KlaprothAndrade2025}.
+
+The transition from unlabeled or label-free spectra to TMT-multiplexed data requires specific adaptations of the underlying deep learning model. In this work, the fine-tuning process involves adjusting the model to recognize TMT labels not as global experimental parameters, but as specific chemical modifications integrated into the sequencing vocabulary.
+
+
+
+\subsubsection{Tokenization and Vocabulary Expansion}
+
+To accommodate TMT labeling, the model's tokenization strategy was expanded. Modanovo utilizes a residue-based vocabulary where each token represents either a standard amino acid or a specific amino acid-PTM combination \cite{KlaprothAndrade2025}. For this study, the configuration was adjusted to include TMT-specific tokens. These tokens account for the fixed mass shifts on N-termini and Lysine (K) residues.
+
+
+
+Specifically, the vocabulary was extended by the following residues and their corresponding mass shifts:
+
+\begin{itemize}
+
+\item \textbf{K[+229.163]}: Lysine with TMT10/16 label.
+
+\item \textbf{[+229.163]-}: TMT10/16 label at the peptide N-terminus.
+
+\item \textbf{K[+343.206]}: Lysine with both TMT and GlyGly (ubiquitination) modification.
+
+\item \textbf{K[+271.173]}: Lysine with both TMT and Acetyl modification.
+
+\item \textbf{K[+243.179]}: Lysine with both TMT and Methyl modification.
+\end{itemize}
+
+Following the Modanovo initialization protocol, the embeddings for these new tokens were initialized by averaging the embeddings of their constituent components (e.g., the base amino acid embedding and the modification-specific shift) to leverage pre-learned chemical representations \cite{KlaprothAndrade2025}.
+
+\subsubsection{TMT Covariate Embedding}
+
+To enable the decoder to account for systematic shifts in fragmentation patterns and
+physicochemical properties induced by TMT labeling, we introduce a categorical conditioning
+mechanism. This allows the model to explicitly distinguish between TMT-labeled and unlabeled
+spectra at a global level.
+
+Analogous to the embedding of precursor features (precursor mass and charge), we define a
+learnable TMT-specific embedding. For each spectrum, a binary indicator
+\(
+f_{\mathrm{TMT}} \in \{0,1\}
+\)
+encodes the presence or absence of TMT labeling and is mapped through an embedding layer:
+
+\[
+\mathbf{E}_{\mathrm{TMT}} = \mathrm{Embedding}(f_{\mathrm{TMT}}) \in \mathbb{R}^{d_{\mathrm{model}}}.
+\]
+
+The resulting vector is integrated into the latent representation via additive fusion.
+Specifically, it is added to the precursor embedding prior to decoding:
+
+\[
+\mathbf{prec\_emb}_{\mathrm{conditioned}}
+= \mathbf{prec\_emb} + \mathbf{E}_{\mathrm{TMT}}.
+\]
+
+By injecting this information at the level of the precursor representation—effectively
+seeding the start of the decoding process—the transformer can adapt its internal
+representations to the chemical environment associated with TMT-labeled peptides.
+This conditioning strategy is computationally efficient, as it preserves the model
+dimensionality while providing a strong global signal that guides de novo sequencing
+depending on the labeling state of the sample.
+
+
+
+\begin{figure}[ht]
+    \centering
+    %\includegraphics[width=\textwidth]{architecture_diagram.pdf}
+    \caption{Schematic representation of the adapted transformer architecture. The TMT status is fed as a covariate embedding into the decoder alongside the spectral features, as adapted from the Modanovo framework.}
+    \label{fig:architecture}
+\end{figure}
+
+\subsection{Multi-task Learning Architecture}
+Building on the modularity of Modanovo, a multi-task learning head was evaluated. This architectural extension aims to decouple the prediction of the amino acid backbone from the specific PTM state by utilizing a dedicated PTM prediction head \cite{KlaprothAndrade2025}.
+
+
+\section{Data Selection and Training Protocol}
+
+\subsection{Data Selection and Composition}
+For the training and evaluation of the adapted model, a robust dataset was curated to ensure high-quality spectral representations. The fundamental requirement for supervised learning in this context is the availability of ground truth sequences associated with high-resolution fragment spectra. Data were integrated from various sources, initially stored in CSV and mzML formats, and subsequently compiled into a unified Mascot Generic Format (MGF) file. This format allows for a streamlined input pipeline where the peptide sequence is explicitly linked to its corresponding spectrum \cite{Deutsch2012}.
+
+\subsection{Quality Filtering and Pre-processing}
+To minimize noise and prevent the model from learning experimental artifacts, several quality filtering steps were applied:
+\begin{itemize}
+    \item \textbf{Peak Cleaning:} Spectra containing no intensity information or empty peaks were removed to maintain data density.
+    \item \textbf{Distribution Analysis:} The dataset was screened for biases in peptide length and charge state distributions. Ensuring a representative spread across these parameters is crucial for the generalization of transformer-based models \cite{KlaprothAndrade2025}.
+    \item \textbf{Bias Mitigation:} To prevent the model from overfitting to hyper-abundant peptides, a threshold of 229 Peptide-Spectrum Matches (PSMs) per unique peptide sequence was enforced.
+    \item \textbf{Data Leakage Prevention:} Following the rigorous validation protocols of \textit{ModaNovo}, a strict data split was implemented. Peptides with specific modifications (e.g., $PEP[ph]$) were assigned to the same split as their unmodified counterparts ($PEP$) to ensure that the model learns the chemical principles of modifications rather than memorizing specific sequences \cite{KlaprothAndrade2025}.
+\end{itemize}
+
+
+
+The final dataset was structured into an 80/10/10 split (training, validation, and testing). To specifically address the TMT expansion, an 80/20 balance between TMT-labeled and unlabeled spectra was maintained, and all non-TMT spectra originating from TMT-specific experiments were removed to ensure label consistency. Furthermore, Unimod syntax was translated into mass-shift syntax (e.g., [+229.163]) to align with the model's vocabulary.
+\subsection{Training Protocol}
+
+Model fine-tuning was initialized from the publicly available ModaNovo checkpoint, allowing the model to build upon previously learned representations of peptide fragmentation and spectral structure \cite{KlaprothAndrade2025}. In contrast to partial adaptation strategies, all model parameters were updated during fine-tuning, i.e.\ no layers were frozen, enabling global adaptation to TMT-specific fragmentation effects and modification patterns.
+
+The underlying transformer architecture was kept identical to the base ModaNovo configuration, comprising a model dimension of $d_{\text{model}} = 512$, 8 self-attention heads, a feed-forward dimension of 1024, and 9 layers each in the encoder and decoder stacks. This architectural consistency ensures that any observed performance differences can be attributed to the fine-tuning procedure rather than structural changes.
+
+Optimization hyperparameters were deliberately chosen to favor stable adaptation of the pre-trained weights. A low learning rate of $1 \times 10^{-6}$ was used to prevent catastrophic forgetting while still permitting gradual adjustment to TMT-induced shifts in fragmentation behavior. To further stabilize early training dynamics, a warm-up phase of two epochs was applied. Regularization was introduced via a weight decay of $1 \times 10^{-5}$ and label smoothing with a factor of 0.01, improving generalization in the presence of heterogeneous modification patterns.
+
+Training was performed using mixed-precision arithmetic with \textit{bf16} precision, reducing memory consumption and improving computational efficiency on modern GPU architectures without compromising numerical stability \cite{Micikevicius2017}. Model selection was based on validation loss, and the checkpoint with the lowest validation loss was retained for all downstream analyses.
+
+
+\section{Evaluation Strategy and Performance Metrics}
+
+
+To rigorously assess the performance of the TMT-adapted de novo sequencing model, a multi-faceted evaluation framework was established. The primary objective is to determine how well the model generalizes to TMT-labeled spectra and various post-translational modifications (PTMs) compared to traditional database-driven assignments.
+
+\subsection{Confidence Scoring and Peptide Ranking}
+Each peptide-spectrum match (PSM) generated by the model is assigned a confidence score to facilitate ranking and quality control. Following the architecture of Transformer-based models like Casanovo and ModaNovo, we derive a peptide-level score by calculating the arithmetic mean of the individual amino acid confidence scores, which are obtained from the softmax output at each decoding step \cite{Yilmaz2022}.
+
+To ensure the physical plausibility of the predictions, a mass-matching constraint is applied. If the calculated mass of the predicted sequence (including PTMs and TMT labels) deviates from the observed precursor mass beyond a defined tolerance (e.g., 10 ppm), the peptide score is penalized. This integration of spectral evidence and thermodynamic constraints is crucial for distinguishing between high-confidence sequences and plausible but incorrect mass-shift combinations.
+
+\subsection{Precision-Coverage Analysis and Stratification}
+The core metric for evaluating the model's predictive power is the precision-coverage curve. This allows for a threshold-independent assessment of how many peptides can be identified at a given reliability level. For this study, we specifically focus on the Area Under the Precision-Coverage Curve (AUPCC), calculated using the trapezoidal rule \cite{Pedregosa2011}.
+
+A critical aspect of our evaluation is the **stratified analysis**. To understand the specific impact of the TMT expansion, we evaluate the performance separately for:
+\begin{itemize}
+    \item \textbf{TMT-labeled spectra:} To measure the success of the model adaptation to systematic mass shifts.
+    \item \textbf{Unlabeled (non-TMT) spectra:} To ensure that the model retains its general sequencing capabilities without losing performance on standard data (preventing "catastrophic forgetting").
+\end{itemize}
+
+Precision ($P$) and Coverage ($C$) at a score threshold $t$ are defined as:
+\begin{equation}
+    P(t) = \frac{|\text{Correct PSMs with score} \geq t|}{|\text{Total predictions with score} \geq t|}
+\end{equation}
+\begin{equation}
+    C(t) = \frac{|\text{Predictions with score} \geq t|}{|\text{Total ground truth identifications}|}
+\end{equation}
+
+A PSM is considered correct if the sequence exactly matches the ground truth identified by a database search (e.g., MaxQuant or MSFragger), treating isobaric amino acids such as Leucine and Isoleucine as equivalent \cite{KlaprothAndrade2025}.
+
+\subsection{Modification-Specific Evaluation}
+To uncover biological insights beyond standard searches, we evaluate the precision for specific PTM-amino acid combinations. For a given modification (e.g., Phosphorylation at T), we subset the ground truth data to include all peptides containing this specific shift. This granular view ensures that the model's ability to handle complex, multiplexed PTM patterns is validated across both TMT and non-TMT backgrounds.
+
+
+
+\section{Biological Validation}
+\subsection{Peptide Alignment}
+\subsection{Genomic Evidence}
+\subsection{Spectral Quality}

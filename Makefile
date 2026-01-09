@@ -1,5 +1,5 @@
 all:
-	pdflatex main && bibtex main && pdflatex main && pdflatex main
+	pdflatex main && biber main && pdflatex main && pdflatex main
 
 latex:
 	pdflatex main

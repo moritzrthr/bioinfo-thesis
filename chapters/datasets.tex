@@ -1,42 +1,41 @@
 \chapter{Datasets}
 \label{chap:datasets}
 
-\section{Datasets}
-The performance and generalizability of deep learning models in proteomics are fundamentally determined by the quality and composition of the underlying training data. For this project, a curated dataset was designed to bridge the gap between unlabeled high-resolution spectra and Tandem Mass Tag (TMT) multiplexed data, while maintaining the model's ability to identify diverse post-translational modifications (PTMs).
+This chapter describes the data resources used for the fine-tuning and evaluation of the model. All spectral data were acquired using high-resolution mass spectrometry and represent a diverse range of peptide sequences and modifications.
 
-\subsection{Fine-Tuning Data}
-The fine-tuning strategy aims to adapt a pre-trained transformer model to the specific fragmentation patterns and mass shifts introduced by TMT labeling. To ensure a robust transition without losing prior knowledge, the dataset follows a specific composition and rigorous filtering pipeline.
+\section{Fine-Tuning Data}
 
-\subsubsection{Data Selection and Preprocessing}
-The raw data, initially available in .mzML and .csv formats, was converted into the Mascot Generic Format (.mgf) to facilitate efficient processing. The training corpus was constructed using an 80/20 balance between TMT-labeled and unlabeled spectra. This ratio was chosen to provide sufficient exposure to the TMT-specific reporter ions and modified N-termini/lysines while retaining the general features of peptide fragmentation learned during pre-training.
+The fine-tuning process utilizes two distinct datasets to adapt the model to TMT-labeled spectra while maintaining performance on unlabeled data.
 
-To ensure unbiased evaluation, the data was divided into 80/10/10 splits (training, validation, and testing). Several measures were implemented to address common pitfalls in proteomics machine learning:
+\subsection{TMT-labeled Dataset}
 
+The primary dataset for adapting the model to isobaric labeling is derived from the PROSPECT-MultiPTM collection \cite{Zeng2024}. These data are based on the ProteomeTools project, a large-scale synthetic peptide library effort \cite{Zolg2017}.
+
+\paragraph{Instrumentation and Fragmentation}
+All spectra were acquired using Thermo Scientific Orbitrap instruments (Q Exactive and Orbitrap Fusion series). Fragmentation was performed exclusively using Higher-energy Collisional Dissociation (HCD), resulting in high-resolution MS2 spectra. The raw data are hosted via the PRIDE archive and ProteomeXchange \cite{Perez-Riverol2022}.
+
+\paragraph{Labeling and Modifications}
+The peptides in this dataset are labeled with Tandem Mass Tags (TMT). The chemical modification manifests as a specific mass shift at the peptide N-terminus and on the $\epsilon$-amino group of all Lysine (Lys) residues. The exact mass shifts follow the Unimod definitions and are encoded using the ProForma standard \cite{Leis2022}.
+
+\paragraph{Dataset Statistics}
+The TMT-labeled dataset is partitioned into training, validation, and test sets with the following dimensions:
 \begin{itemize}
-    \item \textbf{Addressing Peptide Imbalance:} To prevent the model from overfitting to highly abundant "housekeeping" proteins, a maximum of 229 Peptide-Spectrum Matches (PSMs) per peptide sequence was enforced. This sampling strategy ensures that the model learns sequence-independent fragmentation features rather than memorizing frequent sequences.
-    \item \textbf{Data Leakage Prevention:} Special care was taken to ensure that modified versions of the same peptide (e.g., a phosphorylated vs. a non-modified version) were assigned to the same split. This prevents the model from "cheating" by recognizing the backbone sequence in the validation set that it had already seen in the training set.
-    \item \textbf{Quality Filtering:} Spectra were subjected to quality control where empty peaks were removed, and the distributions of peptide length and charge states were monitored. This step ensures that no systematic bias (e.g., only short peptides being TMT-labeled) is introduced into the model \cite{Yue2024}.
+    \item \textbf{Training Set:} 3,683,888 Peptide-Spectrum Matches (PSMs) covering 75,268 unique peptides.
+    \item \textbf{Validation Set:} 363,612 PSMs covering 7,751 unique peptides.
+    \item \textbf{Test Set:} 364,867 PSMs covering 9,415 unique peptides.
 \end{itemize}
 
-\subsubsection{TMT-labeled Dataset}
-The primary source for TMT-specific training is the Multi-PTM PROSPECT dataset. This dataset is particularly valuable as it contains a high density of annotated PTMs and TMT-labeled spectra, providing the necessary complexity for modern proteomics workflows \cite{Yue2024}.
+\subsection{Non-TMT  Data (Replay Set)}
 
-The dataset comprises:
+To prevent catastrophic forgetting during the fine-tuning process, a diverse reference dataset of unlabeled (non-TMT) spectra is included. This "Replay Set" consists of a mixture of 80\% MultiPTM data and 20\% data from the MassIVE Knowledge Base (MassIVE-KB) \cite{Wang2018}.
+
+\paragraph{Technical Characteristics}
+The instrumentation and fragmentation settings (Orbitrap HCD) are consistent with the TMT-labeled dataset to ensure technical compatibility. This set includes a wide variety of post-translational modifications and biological sequences.
+
+\paragraph{Dataset Statistics}
+The non-TMT reference data is partitioned into training, validation, and test sets with the following dimensions:
 \begin{itemize}
-    \item \textbf{Training Set:} 3,683,888 PSMs
-    \item \textbf{Validation Set:} 462,008 PSMs
+    \item \textbf{Training Set:} 784,128 PSMs covering 289,568 unique peptides.
+    \item \textbf{Validation Set:} 98,396 PSMs covering 23,004 unique peptides.
+    \item \textbf{Test Set:} 93,453 PSMs covering 19,141 unique peptides.
 \end{itemize}
-
-During preprocessing, all non-TMT spectra originating from this source were excluded to maintain the integrity of the TMT-specific training phase. Furthermore, the peptide annotations were harmonized by translating Unimod syntax into a mass shift-based syntax. This allows the transformer model to treat modifications as continuous mass offsets rather than discrete categorical labels, which is crucial for identifying rare or novel PTMs.
-
-\subsubsection{Non-TMT Reference Data (Replay Set)}
-To prevent "catastrophic forgetting"—a phenomenon where a model loses its ability to perform original tasks after being fine-tuned on new data—a "Replay Set" of non-TMT data was integrated. This set consists of a highly diverse subset of the MoDaNovo dataset and the Massive Knowledge Base (Massive-KB) \cite{Wang2022}.
-
-The composition of this reference set includes:
-\begin{itemize}
-    \item \textbf{Source:} 80\% Multi-PTM (non-labeled subset) and 20\% Massive-KB.
-    \item \textbf{Volume:} 784,128 PSMs corresponding to 289,568 unique peptides.
-    \item \textbf{Split:} The training subset contains 98,396 peptides, while the validation subset contains 23,004 peptides.
-\end{itemize}
-
-By mixing these high-confidence reference spectra into the fine-tuning process, the model retains its baseline accuracy for standard peptide identification while successfully learning the nuances of TMT-labeled fragmentation.
