@@ -1,1 +1,153 @@
 \chapter{Results}
+\label{ch:results}
+
+\section{Model Training and Convergence}
+
+The model was trained until the validation loss showed early signs of stagnation, indicating the onset of overfitting. Convergence was reached after 13 epochs, corresponding to approximately 1,550,000 training steps. To assess the final performance, the model state at this checkpoint was utilized for inference on the complete, independent test dataset.
+
+\section{Performance Evaluation on the test set}
+
+To evaluate the predictive confidence, precision-coverage curves were generated for the different PTM categories and stratified by TMT  vs non-TMT data.  The performance is quantified using the Area Under the Precision-Coverage Curve (AUPCC).
+
+The evaluation follows a peptide-centric approach: a single ground truth peptide contributes to the curves of all modifications it contains. For instance, a peptide sequence such as \enquote{[+229.997]-PEPT[+79.966]IDEK[+14.016]} is included in both the precision-coverage curve for phosphorylated threonine (T[+79.966]) and monomethylated lysine (K[+14.016]). In all subsequent analyses, the performance on unmodified peptides (light grey in Figure \ref{fig:PCfacets}) serves as a reference baseline.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{plots/results/PCfacets.png}
+    \caption{Precision-coverage curves across different PTMs. The performance of the final model on TMT-labeled (orange), non-TMT (blue) spectra is shown. Unmodified peptides are shown in light grey for comparison.}
+    \label{fig:PCfacets}
+\end{figure}
+
+\subsection{Comparative Performance: Non-TMT and Modanovo Baseline}
+
+A key requirement for the expanded model was to maintain high performance on standard (non-TMT) data, ensuring that the addition of TMT-related features did not degrade general sequencing accuracy. On non-TMT unmodified peptides, the model achieved an AUPCC of 0.92, which is highly consistent with the performance reported for the Modanovo architecture (AUPCC of 0.93) \cite{Yilmaz2022}.
+
+This stability is further reflected in the specific PTM performance. For instance, the model demonstrated similar accuracy for Phosphorylation on non-TMT data (AUPCC 0.95) staying aligned with the general Modanovo median for phosphorylation (0.93--0.96 depending on the residue) \cite{Yilmaz2022}. Similarly, high performance was observed for Pyro-Glu (AUPCC 0.95), likely due to its restricted occurrence at the peptide N-terminus, a pattern the model successfully internalizes. In contrast, O-Glycosylation (S/T[+203.079]) remains a significant challenge with an AUPCC of 0.39, mirroring the difficulties reported in literature due to low training examples and complex fragmentation \cite{Yilmaz2022}.
+
+\subsection{Generalization on TMT-Labeled  Data}
+
+The global performance on TMT data (AUPCC 0.89) is slightly lower than on non-TMT data (AUPCC 0.92), reflecting the increased spectral complexity introduced by the chemical labels.
+
+Specific findings for TMT-labeled PTMs include:
+\begin{itemize}
+    \item \textbf{Ubiquitination and Monomethylation:} Interestingly, the model performed slightly better on TMT-labeled Ubiquitination (AUPCC 0.95) compared to its non-TMT counterpart (AUPCC 0.94). For Monomethylation, the gap was even more pronounced (TMT: 0.94 vs. non-TMT: 0.82), suggesting that the systematic mass shifts provided by TMT might aid in distinguishing these specific modifications in certain contexts.
+    \item \textbf{Acetylation:} Performance remained robust across both categories (TMT: 0.91 vs. non-TMT: 0.92), indicating that Acetylation is identified with high confidence regardless of the labeling strategy.
+    \item \textbf{Oxidation:} A noticeable decrease in performance was observed for TMT-labeled oxidized peptides (AUPCC 0.81) compared to non-TMT (AUPCC 0.90), pointing towards potential interference between the TMT-label fragments and the neutral losses associated with methionine oxidation.
+\end{itemize}
+
+The  final precision at full coverage (e.g., 0.59 on all tmt-labeled spectra) demonstrates that the model provides a reliable foundation for uncovering biological insights in multiplexed quantitative proteomics experiments.
+
+
+\section{Hyperparameter Optimization and Isotopic Sensitivity}
+
+A critical challenge identified during the evaluation of TMT-labeled data was the increased frequency of non-monoisotopic precursor selection. In TMT multiplexed samples, the high density of ions and the chemical labeling itself often lead to a shift where the instrument triggers fragmentation on an isotopic peak rather than the monoisotopic mass. To address this, the model configuration was iteratively optimized.
+
+\subsection{Isotope Error Range and Beam Search Synergy}
+
+The initial baseline configuration (Config0) utilized a restrictive isotope error range of $0,1$, which often forced the model to strictly adhere to the theoretical monoisotopic mass, leading to sequence errors when the precursor mass was incorrectly assigned by the instrument. By expanding this range to $0,3$ (Config ISO), the model gained the necessary flexibility to account for these systematic mass shifts without being penalized for "off-by-one" or "off-by-two" Dalton errors.
+
+Furthermore, while literature for models like Casanovo suggests that increasing the beam size has diminishing returns, our results indicate a strong synergy between isotope flexibility and search breadth. Increasing the beam size from 1 to 5 (Config FINAL) allowed the decoder to explore a wider sequence space, which proved essential for resolving the complex fragmentation patterns of TMT-labeled and modified peptides.
+
+\subsection{Quantitative Impact of Configuration Changes}
+
+The optimization process led to a stepwise improvement in all global metrics (see Table \ref{tab:config_comparison}). The global AUPCC increased from 0.8746 (Config0) to 0.8817 (ISO) and reached its peak at 0.8988 in the FINAL configuration. Notably, the most significant breakthrough occurred in the jump to the FINAL configuration, where the global precision at full coverage rose from 0.5726 to 0.6146.
+
+\begin{table}[htbp]
+\centering
+\caption{Comparison of model performance across different configurations.}
+\label{tab:config_comparison}
+\begin{tabular}{lccc}
+\hline
+\textbf{Metric} & \textbf{Config0} & \textbf{Config ISO} & \textbf{Config FINAL} \\ \hline
+Global AUPCC    & 0.8746           & 0.8817              & 0.8988                \\
+Global Precision (Cov 1.0) & 0.5726 & 0.5726              & 0.6146                \\ \hline
+\end{tabular}
+\end{table}
+
+\subsection{Impact on Specific Modification Classes}
+
+The transition to Config FINAL particularly benefited complex PTMs:
+
+\begin{itemize}
+    \item \textbf{Ubiquitination:} This category showed a massive precision jump from 0.6675 to 0.7359. The combination of expanded isotope ranges and increased beam size likely allowed the model to better identify the characteristic GlyGly-remnant fragmentation patterns, which are often obscured in TMT-labeled spectra.
+    \item \textbf{Phosphorylation:} As the largest dataset (N=293,256), the shift from 0.8556 (Config0) to 0.8784 (AUPCC) and a precision increase to 0.5656 is statistically the most significant indicator of the model's enhanced robustness.
+    \item \textbf{Monomethylation:} The AUPCC rose from 0.9032 to 0.9326. Remarkably, TMT-labeled methylated peptides achieved a significantly higher AUPCC (0.9443) than their non-TMT counterparts (0.8211). This suggests that the model learned to leverage the TMT-induced mass shifts as a "fingerprint" to distinguish methylation from isobaric interferences more effectively than in unlabeled data.
+\end{itemize}
+
+The improvement in Global TMT AUPCC (from 0.8640 to 0.8717 in the ISO stage) confirms that accounting for isotopic uncertainty is a prerequisite for high-confidence de novo sequencing in multiplexed workflows.
+
+
+
+
+
+\section{Application on independent Glioma TMT Dataset}
+
+To evaluate the model's discovery potential, inference was performed on the complete Glioma TMT dataset, comprising 6.48 million spectra. Given that \textit{de novo} sequencing operates independently of protein databases, it is crucial to validate the predicted sequences against a reference proteome to distinguish between high-confidence identifications and potential false positives.
+
+\subsection{Proteome Alignment and Score Calibration}
+
+The predicted sequences for unmodified peptides were aligned against the human reference proteome using \texttt{blastp}. This alignment process serves as a first-tier validation of the model's output quality. The sequences were categorized based on their alignment criteria: perfect matches (identity = 100\%), sequences with one mismatch, and sequences with two mismatches.
+
+Out of the total predictions, 1.34 million peptides aligned perfectly with the reference proteome, while 0.62 million and 0.8 million sequences exhibited one and two mismatches, respectively.
+
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.85\textwidth]{plots/results/DeNovo_Glioma_TMT_Results.png}
+    \caption{Alignment of \textit{de novo} predictions to the human reference proteome. The proportion of perfect alignments (blue) increases significantly with higher confidence scores. At a score cutoff of $>0.95$, 86.5\% of the 398.4k predictions align perfectly.}
+    \label{fig:alignment_results}
+\end{figure}
+
+The upward trend of the blue bars in Figure \ref{fig:alignment_results} confirms that the internal scoring mechanism of the Transformer architecture effectively reflects the probability of a sequence being biologically "correct." At the highest confidence bin ($>0.95$), the vast majority of sequences are already known to the genome, providing a solid baseline for the subsequent analysis of modified and novel peptides.
+
+\subsection{Stratified Performance and Modification Stability}
+
+To further investigate the reliability across different chemical states, the precision of the predictions was stratified by modification type and ranked by confidence (PSM Rank). In this analysis, the "Rank 1" prediction represent the highest-confidence spectrum.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.85\textwidth]{plots/results/rank_precision_offby0_stratified.png}
+    \caption{Proportion of perfectly aligned PSMs stratified by modification type and ranked by confidence score.}
+    \label{fig:rank_precision}
+\end{figure}
+
+As shown in Figure \ref{fig:rank_precision}, most modifications follow the expected trend where decreasing confidence ranks correlate with a lower proportion of perfect alignments. Phosphorylated peptides follow the global trend closely.
+
+A notable outlier is Monomethylation. While this modification showed excellent performance in the AUPCC metrics on the test set, the proportion of perfect alignments drops more sharply with increasing rank compared to other modifications. This discrepancy suggests the absolute mass shifts or the localization of the methyl group might still lead to mismatches during genomic alignment in real-world samples.
+
+\subsection{Summary of Validation}
+
+The alignment results demonstrate that the expanded model produces biologically plausible peptide sequences. The high correlation between the model's confidence score and the genomic match rate validates the use of these scores as a filter for discovery. This foundation allows for the exploration of spectra that remain unidentified by traditional database-driven methods, such as MaxQuant, which will be discussed in the following section.
+
+
+\section{Uncovering the Dark Proteome: Comparison with MaxQuant}
+
+A primary objective of this study was to evaluate the extent to which \textit{de novo} peptide sequencing can expand the identification landscape beyond the limitations of database-driven methods. By comparing our results with those obtained via MaxQuant (MQ), we can quantify the "dark matter" of the proteome—spectra that contain high-quality information but remain unidentified by traditional search engines.
+
+\subsection{Unique Peptide Identifications}
+
+The comparison of unique peptide sequences identified by both methods reveals a substantial expansion of the detectable proteome. As shown in Figure \ref{fig:unique_peps}, the \textit{de novo} approach identified approximately 40,000 unique peptides that were also found by MaxQuant, demonstrating high consistency in the "known" space. 
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.7\textwidth]{plots/results/uniquePeps.png}
+    \caption{Overlap of unique peptide identifications between the proposed \textit{de novo} model and MaxQuant. The model successfully recovers the majority of MQ identifications while contributing 40,000 additional unique sequences.}
+    \label{fig:unique_peps}
+\end{figure}
+
+Crucially, the model discovered an additional 40,000 unique peptides that were entirely absent from the MQ results. Conversely, only a negligible fraction (approximately 30 peptides) was identified by MQ but missed by our model, indicating that the \textit{de novo} approach covers nearly the entire search space of the database-driven method while doubling the number of unique sequences.
+
+\subsection{Identification of Previously Unidentified Spectra}
+
+The true potential of the model is reflected at the spectrum level (PSMs). In the analyzed dataset, MaxQuant provided identifications for 1,510,866 spectra. Our model was able to provide high-confidence sequences for a significant portion of the remaining "dark" spectra:
+
+\begin{itemize}
+    \item \textbf{High-Confidence Matches (Score $> 0.8$):} We identified 446,290 additional spectra with a confidence score above 0.8. Based on our previous alignment validation, this score range corresponds to highly reliable peptide sequences.
+    \item \textbf{Precursor-Shifted Matches (Score $-0.2 < s < 0$):} Interestingly, we found 231,208 spectra in a score range that indicates high sequencing confidence but carries a penalty ($-1$) due to a precursor mass mismatch. These spectra likely represent peptides with unexpected modifications or amino acid substitutions (SNPs) that shift the precursor mass beyond the tolerance of the theoretical database entry, yet yield clear fragmentation patterns.
+\end{itemize}
+
+Summing these categories, the \textit{de novo} approach provides plausible sequence candidates for over 670,000 spectra that were previously discarded in the MQ workflow. This substantial increase in spectral utilization highlights the model's ability to move beyond the "closed-search" paradigm.
+
+\subsection{From Global Discovery to Specific Variants}
+
+The identification of these additional sequences suggests that the "dark proteome" in these glioma samples is rich in biological variants. The high number of high-confidence predictions that do not perfectly match the database entries—especially those with slight precursor shifts—points towards the presence of non-canonical protein isoforms. In the following sections, we will categorize these findings into specific biological phenomena, namely novel phosphorylation sites (p-sites) and single nucleotide polymorphisms (SNPs).

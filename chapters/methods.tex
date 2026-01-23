@@ -81,26 +81,87 @@ depending on the labeling state of the sample.
 \begin{figure}[ht]
     \centering
     %\includegraphics[width=\textwidth]{architecture_diagram.pdf}
-    \caption{Schematic representation of the adapted transformer architecture. The TMT status is fed as a covariate embedding into the decoder alongside the spectral features, as adapted from the Modanovo framework.}
+    \includegraphics{figures/methods/architecture_tmt.png}
+    \caption{Schematic representation of the adapted transformer architecture. The TMT status is fed as a covariate embedding into the decoder alongside the precursor and previous predicted residues. Moreover vocabulary is expanded with TMT tokens.}
     \label{fig:architecture}
 \end{figure}
 
 \subsection{Multi-task Learning Architecture}
 Building on the modularity of Modanovo, a multi-task learning head was evaluated. This architectural extension aims to decouple the prediction of the amino acid backbone from the specific PTM state by utilizing a dedicated PTM prediction head \cite{KlaprothAndrade2025}.
-
-
 \section{Data Selection and Training Protocol}
 
 \subsection{Data Selection and Composition}
 For the training and evaluation of the adapted model, a robust dataset was curated to ensure high-quality spectral representations. The fundamental requirement for supervised learning in this context is the availability of ground truth sequences associated with high-resolution fragment spectra. Data were integrated from various sources, initially stored in CSV and mzML formats, and subsequently compiled into a unified Mascot Generic Format (MGF) file. This format allows for a streamlined input pipeline where the peptide sequence is explicitly linked to its corresponding spectrum \cite{Deutsch2012}.
 
+\begin{figure}[htbp]
+    \centering
+    \includegraphics{figures/methods/datasplits.png}
+    \caption{Composition of the fine-tuning dataset showing the distribution of Peptide-Spectrum Matches (PSMs). The majority (82\%) consists of TMT-labeled MultiPTM data, complemented by a 18\% Replay-Set to maintain performance on unlabeled spectra.}
+    \label{fig:datasplits}
+\end{figure}
+
+\section{Fine-Tuning Data}
+
+The fine-tuning process utilizes two distinct datasets to adapt the model to TMT-labeled spectra while maintaining performance on unlabeled data (see Figure \ref{fig:datasplits}).
+
+\subsection{TMT-labeled Dataset}
+The primary dataset for adapting the model to isobaric labeling is derived from the PROSPECT-MultiPTM collection \cite{Zeng2024}. These data are based on the ProteomeTools project, a large-scale synthetic peptide library effort \cite{Zolg2017}.
+
+\paragraph{Instrumentation and Fragmentation}
+All spectra were acquired using Thermo Scientific Orbitrap instruments (Q Exactive and Orbitrap Fusion series). Fragmentation was performed exclusively using Higher-energy Collisional Dissociation (HCD), resulting in high-resolution MS2 spectra.
+
+\paragraph{Labeling and Modifications}
+The peptides in this dataset are labeled with Tandem Mass Tags (TMT). The chemical modification manifests as a specific mass shift at the peptide N-terminus and on the $\epsilon$-amino group of all Lysine (K) residues. The exact mass shifts follow the Unimod definitions and are encoded using the ProForma standard \cite{Leis2022}.
+
+\paragraph{Dataset Statistics}
+The TMT-labeled dataset is partitioned as follows:
+\begin{itemize}
+    \item \textbf{Training Set:} 3,683,888 PSMs covering 75,268 unique peptides.
+    \item \textbf{Validation Set:} 363,612 PSMs covering 7,751 unique peptides.
+    \item \textbf{Test Set:} 364,867 PSMs covering 9,415 unique peptides.
+\end{itemize}
+
+\subsection{Non-TMT Data (Replay Set)}
+To prevent catastrophic forgetting during the fine-tuning process, a diverse reference dataset of unlabeled (non-TMT) spectra is included. This "Replay Set" consists of a mixture of 80\% MultiPTM data and 20\% data from the MassIVE Knowledge Base (MassIVE-KB) \cite{Wang2018}.
+
+\paragraph{Dataset Statistics}
+The non-TMT reference data is partitioned as follows:
+\begin{itemize}
+    \item \textbf{Training Set:} 784,128 PSMs covering 289,568 unique peptides.
+    \item \textbf{Validation Set:} 98,396 PSMs covering 23,004 unique peptides.
+    \item \textbf{Test Set:} 93,453 PSMs covering 19,141 unique peptides.
+\end{itemize}
+
+\subsection{Modification Distribution and Heatmap Analysis}
+To evaluate the coverage of the training data, we visualized the modification density across different residues. This approach was closely oriented towards the \textit{ModaNovo} framework to ensure comparability and systematic evaluation of PTM-residue pairs \cite{KlaprothAndrade2025}.
+
+\begin{figure}[htbp]
+    \centering
+    \begin{subfigure}{\textwidth}
+        \centering
+        \includegraphics{figures/methods/heatmap_TMT_fixed.png}
+        \caption{Modification distribution for the TMT-labeled dataset.}
+        \label{fig:heatmap_tmt}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{\textwidth}
+        \centering
+        \includegraphics{figures/methods/heatmap_NonTMT_fixed.png}
+        \caption{Modification distribution for the non-TMT Replay Set.}
+        \label{fig:heatmap_nontmt}
+    \end{subfigure}
+    \caption{Heatmaps showing the log-scaled spectral counts for various PTMs across amino acid residues. While the TMT dataset (a) shows high density for N-terminal and Lysine labeling, the Replay Set (b) provides a broader PTM diversity including Phosphorylation and Glycosylation.}
+    \label{fig:heatmaps_combined}
+\end{figure}
+
+As shown in Figure \ref{fig:heatmaps_combined}, the current data selection strategy provides high coverage for common PTMs such as Oxidation (M) and Phosphorylation (S, T, Y). However, there remains significant optimization potential. Specifically, certain rare PTM-residue combinations or complex multiplexed modifications (e.g., Ubiquitinylation + TMT) exhibit lower spectral counts, which might limit the model's ability to generalize on extremely sparse clinical samples.
+
 \subsection{Quality Filtering and Pre-processing}
 To minimize noise and prevent the model from learning experimental artifacts, several quality filtering steps were applied:
 \begin{itemize}
-    \item \textbf{Peak Cleaning:} Spectra containing no intensity information or empty peaks were removed to maintain data density.
-    \item \textbf{Distribution Analysis:} The dataset was screened for biases in peptide length and charge state distributions. Ensuring a representative spread across these parameters is crucial for the generalization of transformer-based models \cite{KlaprothAndrade2025}.
-    \item \textbf{Bias Mitigation:} To prevent the model from overfitting to hyper-abundant peptides, a threshold of 229 Peptide-Spectrum Matches (PSMs) per unique peptide sequence was enforced.
-    \item \textbf{Data Leakage Prevention:} Following the rigorous validation protocols of \textit{ModaNovo}, a strict data split was implemented. Peptides with specific modifications (e.g., $PEP[ph]$) were assigned to the same split as their unmodified counterparts ($PEP$) to ensure that the model learns the chemical principles of modifications rather than memorizing specific sequences \cite{KlaprothAndrade2025}.
+    \item \textbf{Peak Cleaning:} Spectra containing no intensity information or empty peaks were removed.
+    \item \textbf{Bias Mitigation:} To prevent overfitting to hyper-abundant peptides, a threshold of 229 PSMs per unique peptide sequence was enforced.
+    \item \textbf{Data Leakage Prevention:} Following the \textit{ModaNovo} protocol, a strict data split was implemented. Peptides with specific modifications (e.g., $PEP[ph]$) were assigned to the same split as their unmodified counterparts ($PEP$) to ensure the model learns chemical principles rather than memorizing sequences \cite{KlaprothAndrade2025}.
 \end{itemize}
 
 
@@ -151,7 +212,47 @@ To uncover biological insights beyond standard searches, we evaluate the precisi
 
 
 
-\section{Biological Validation}
-\subsection{Peptide Alignment}
+\section{Downstream Validation and Biological Integration}
+To evaluate the practical utility of the model, it was applied to an independent Glioma cancer dataset. 
+
+\subsection{Data Acquisition and Preprocessing}
+The primary data source consisted of Orbitrap-based mass spectrometry raw files (.raw) from cancer proteomic studies. To ensure compatibility with the deep learning framework, raw files were converted into .mgf format using the \texttt{ThermoRawFileParser} (v2.0.0), which facilitates the extraction of metadata and spectral information \cite{Hulstaert2020}. 
+All MS1 (precursor scans) and MS3  scans were removed for the analysis. 
+
+\paragraph{De Novo Sequencing Configuration (finetuned ModaNovo)}
+The sequencing of the TMT-labeled spectra was performed using the adapted ModaNovo framework. To ensure high-quality sequence predictions and to accommodate the systematic shifts introduced by TMT, the following parameters were applied:
+\begin{itemize}
+    \item \textbf{Mass Tolerances:} The precursor mass tolerance was set to 50 ppm to account for potential drift in large-scale datasets. The isotope error range was restricted to $[0, 3]$.
+    \item \textbf{Spectrum Processing:} To reduce noise, only the 150 most intense peaks per spectrum (\texttt{n\_peaks}) within an $m/z$ range of 50.0 to 2500.0 were retained. Peaks within a 2.0 Da window of the precursor $m/z$ were removed to prevent interference.
+    \item \textbf{Sequence Constraints:} A minimum peptide length of 6 amino acids and a maximum of 100 were enforced. For the decoding process, a beam search with a width of $n\_beams = 1$ was utilized, focusing on the top-ranked match.
+    \item \textbf{Quality Control:} Only spectra with a precursor charge of $\leq 10$ and a relative intensity threshold of 0.01 were processed.
+\end{itemize}
+
+\paragraph{Database Search Configuration (MaxQuant)}
+To provide a complementary ground-truth baseline, all Glioma datasets were processed using MaxQuant (version 2.1.3.0) \cite{Tyanova2016}. The search was conducted against the human reference proteome (UniProt UP000005640). 
+
+The search parameters were harmonized with the experimental design:
+\begin{itemize}
+    \item \textbf{Protease:} Trypsin/P was specified, allowing for cleavage C-terminal to Lysine and Arginine, even when followed by Proline.
+    \item \textbf{Fixed Modifications:} Carbamidomethylation of cysteine (+57.021 Da) was set as a static modification.
+    \item \textbf{Variable Modifications:} To capture the regulatory landscape of the cancer samples, oxidation (M) and phosphorylation (S/T/Y) were included in the search space.
+\end{itemize}
+The results from this database-driven approach serve as the benchmark  for calculating the precision and coverage of the de novo model's predictions.
+\subsection{Peptide Alignment and Sequence Validation}
+To validate the biological origin of the predicted de novo sequences and to distinguish between known peptides and potential novel discoveries, a sequence alignment against the reference proteome was performed.
+
+\paragraph{BLASTp Configuration and Ambiguity Handling}
+Alignment was executed using \texttt{Protein-Protein BLAST} (version 2.17.0+) against the same human reference proteome (UniProt UP000005640) used for the MaxQuant search. To account for the inherent mass-spectrometric ambiguities where different amino acid compositions result in near-identical masses, a specialized encoding strategy was implemented:
+\begin{itemize}
+    \item \textbf{I/L Equivalence:} Leucine and Isoleucine were treated as identical.
+    \item \textbf{Mass-Based Ambiguitites:} Specific residues with overlapping mass shifts, such as the deamidation of Glutamine ($Q+0.984$ Da) resulting in the same mass as Glutamic acid ($E$), or Asparagine deamidation matching Aspartic acid ($D$), were addressed.
+    \item \textbf{Ambiguity Codes:} All unmodified Aspartic acid ($D$) residues in the query were replaced with the code \texttt{B} (representing $D$ or $N$), and all unmodified Glutamic acid ($E$) residues were replaced with \texttt{Z} (representing $E$ or $Q$). The \texttt{PAM30} substitution matrix was utilized, as it natively handles these ambiguity codes to allow perfect matches against either potential target residue. 
+\end{itemize}
+
+The alignment parameters were set to an E-value of 2000, \texttt{qcov\_hsp\_perc} of 80, and \texttt{comp\_based\_stats} disabled to prevent score inflation for short peptide sequences.
+
+\paragraph{Post-Alignment Filtering and SNP Analysis}
+The resulting alignments were further enriched to identify Single Nucleotide Polymorphisms (SNPs) and truncation events. To account for sequences extending beyond protein termini or alignment gaps, the full query and target sequences were retrieved. 
+The number of mismatches was calculated by considering the \texttt{B} and \texttt{Z} equivalences. For each remaining mismatch, an automated codon-lookup was performed. A mismatch was classified as "SNP-explainable" if the transition between the predicted amino acid and the reference residue could be achieved by a single nucleotide substitution in the underlying codon. Cases involving gaps or truncations where the query extended beyond the reference boundaries were excluded from the SNP analysis to maintain high confidence in the mutation mapping.
 \subsection{Genomic Evidence}
 \subsection{Spectral Quality}
