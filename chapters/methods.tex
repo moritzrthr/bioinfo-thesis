@@ -81,7 +81,7 @@ depending on the labeling state of the sample.
 \begin{figure}[ht]
     \centering
     %\includegraphics[width=\textwidth]{architecture_diagram.pdf}
-    \includegraphics{figures/methods/architecture_tmt.png}
+    \includegraphics{plots/methods/architecture_tmt.png}
     \caption{Schematic representation of the adapted transformer architecture. The TMT status is fed as a covariate embedding into the decoder alongside the precursor and previous predicted residues. Moreover vocabulary is expanded with TMT tokens.}
     \label{fig:architecture}
 \end{figure}
@@ -95,7 +95,7 @@ For the training and evaluation of the adapted model, a robust dataset was curat
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics{figures/methods/datasplits.png}
+    \includegraphics{plots/methods/datasplits.png}
     \caption{Composition of the fine-tuning dataset showing the distribution of Peptide-Spectrum Matches (PSMs). The majority (82\%) consists of TMT-labeled MultiPTM data, complemented by a 18\% Replay-Set to maintain performance on unlabeled spectra.}
     \label{fig:datasplits}
 \end{figure}
@@ -139,14 +139,14 @@ To evaluate the coverage of the training data, we visualized the modification de
     \centering
     \begin{subfigure}{\textwidth}
         \centering
-        \includegraphics{figures/methods/heatmap_TMT_fixed.png}
+        \includegraphics{plots/methods/heatmap_TMT_fixed.png}
         \caption{Modification distribution for the TMT-labeled dataset.}
         \label{fig:heatmap_tmt}
     \end{subfigure}
     \hfill
     \begin{subfigure}{\textwidth}
         \centering
-        \includegraphics{figures/methods/heatmap_NonTMT_fixed.png}
+        \includegraphics{plots/methods/heatmap_NonTMT_fixed.png}
         \caption{Modification distribution for the non-TMT Replay Set.}
         \label{fig:heatmap_nontmt}
     \end{subfigure}
@@ -253,6 +253,8 @@ The alignment parameters were set to an E-value of 2000, \texttt{qcov\_hsp\_perc
 
 \paragraph{Post-Alignment Filtering and SNP Analysis}
 The resulting alignments were further enriched to identify Single Nucleotide Polymorphisms (SNPs) and truncation events. To account for sequences extending beyond protein termini or alignment gaps, the full query and target sequences were retrieved. 
-The number of mismatches was calculated by considering the \texttt{B} and \texttt{Z} equivalences. For each remaining mismatch, an automated codon-lookup was performed. A mismatch was classified as "SNP-explainable" if the transition between the predicted amino acid and the reference residue could be achieved by a single nucleotide substitution in the underlying codon. Cases involving gaps or truncations where the query extended beyond the reference boundaries were excluded from the SNP analysis to maintain high confidence in the mutation mapping.
+The number of mismatches was calculated by considering the \texttt{B} and \texttt{Z} equivalences. For each remaining mismatch, an automated codon-lookup was performed. A mismatch was classified as "SNP-explainable" if the transition between the predicted amino acid and the reference residue could be achieved by a single nucleotide substitution in the underlying codon. 
+
+Cases involving gaps or truncations where the query extended beyond the reference boundaries were excluded from the SNP analysis to maintain high confidence in the mutation mapping.
 \subsection{Genomic Evidence}
 \subsection{Spectral Quality}

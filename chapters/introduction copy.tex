@@ -1,0 +1,23 @@
+\chapter{Introduction}
+\label{chap:introduction}
+
+
+\section{Introduction}
+
+\subsection{The Role of Proteomics in Clinical Cancer Research}
+The advent of precision medicine has shifted the focus from broad therapeutic approaches to individualized treatment strategies, particularly in oncology. Proteomics, the large-scale study of proteins and their functions, provides a functional snapshot of the cell that genomics alone cannot capture \cite{Aebersold2016}. In clinical cancer research, specifically in the study of complex malignancies such as gliomas, mass spectrometry (MS)-based proteomics is indispensable for identifying biomarkers and therapeutic targets \cite{Mertins2016}. By analyzing the proteome, researchers can observe the actual effectors of biological processes, making it possible to understand tumor heterogeneity and drug resistance mechanisms at a molecular level.
+
+\subsection{Limitations of Database-Informed Search (DBIS) Strategies}
+The standard paradigm for peptide identification is the Database-Informed Search (DBIS). While effective for well-characterized organisms, DBIS faces the "search space challenge." As the number of considered post-translational modifications (PTMs) and single nucleotide polymorphisms (SNPs) increases, the theoretical search space expands exponentially, leading to a significant loss in statistical power and increased false discovery rates \cite{Chick2015}. Consequently, rare but biologically significant modifications—often crucial in cancer signaling—remain "hidden" because they were not explicitly included in the search parameters.
+
+\subsection{De Novo Sequencing: Unbiased Identification of Peptides and PTMs}
+To overcome the constraints of predefined databases, \textit{de novo} peptide sequencing has emerged as a powerful alternative. This approach predicts the amino acid sequence directly from the MS/MS fragment ions without prior knowledge of the proteome. Recent breakthroughs in deep learning, particularly transformer-based architectures like ModaNovo or Casanovo, have significantly increased the accuracy of these predictions \cite{Yilmaz2022, Rappsilber2024}. These models can theoretically identify any peptide sequence, including those with unexpected modifications, making them ideal for discovering novel proteoforms in clinical samples.
+
+\subsection{Challenges of Multiplexing in De Novo Sequencing}
+Quantitative proteomics often relies on multiplexing techniques such as Tandem Mass Tags (TMT) to increase throughput and reduce technical variability across clinical cohorts. However, TMT labeling introduces significant complexity into MS/MS spectra. The chemical tags add substantial mass to the N-terminus and lysine residues, and the fragmentation process produces high-intensity reporter ions in the low $m/z$ range \cite{Thompson2003}. These systematic shifts and altered intensity patterns are not well-represented in standard training datasets for \textit{de novo} algorithms, leading to a drop in performance when analyzing multiplexed data.
+
+\subsection{Problem Statement and Research Gap}
+Despite the progress in deep learning-based \textit{de novo} sequencing, a significant gap remains: most state-of-the-art models are trained on unlabeled data. When applied to TMT-labeled samples, models like ModaNovo often fail to correctly interpret the mass shifts and the altered fragmentation behavior. There is currently a lack of specialized \textit{de novo} sequencing architectures or fine-tuning strategies that can handle the unique chemical footprint of TMT labeling while simultaneously identifying diverse PTMs. This limitation prevents the full utilization of multiplexed datasets for discovering novel biological insights beyond the reach of database searches.
+
+\subsection{Objectives and Contributions}
+The objective of this thesis is to bridge this gap by expanding \textit{de novo} peptide sequencing capabilities to TMT-labeled proteomics data. We propose to evaluate and adapt transformer-based models—specifically focusing on fine-tuning and conditioning strategies—to account for the systematic mass shifts introduced by TMT. By integrating diverse PTMs into this framework, this work aims to provide a robust tool for the unbiased identification of modified peptides in multiplexed experiments, ultimately uncovering regulatory networks in cancer biology that are overlooked by traditional methods.

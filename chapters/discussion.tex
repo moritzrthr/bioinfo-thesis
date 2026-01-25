@@ -1,2 +1,16 @@
 \chapter{Discussion}
 %and prospect
+
+\section{Discussion and Future Directions}
+
+This work serves as a proof-of-concept that adapting transformer-based \textit{de novo} sequencing models to TMT-labeled proteomics data is not only feasible but yields significant biological insights. By accounting for the systematic mass shifts of Tandem Mass Tags, the model successfully recovered a vast majority of database-identified peptides while doubling the number of unique sequences identified in complex glioma samples. The discovery of 694 genomic-validated SNPs and the identification of the metabolic "on-switch" p-Ser15 on PYGL demonstrate that the model can reliably move "beyond the database" to uncover regulatory and structural variants that are invisible to traditional search engines.
+
+\subsection{Addressing Current Limitations and Model Refinement}
+Despite these promising results, the analysis of high-density modification sites in proteins like SRCIN1 highlights the need for more sophisticated scoring mechanisms. Currently, the model’s confidence scores do not always distinguish between a correct sequence with a misplaced modification and a truly correct modified peptide. Future iterations must implement a dedicated localized scoring system to improve PTM site assignment and reduce false-positive rates in the "dark proteome" space \cite{Lim2021}.
+
+Furthermore, the adaptation process revealed that maintaining a "replay set" of non-TMT data is likely unnecessary. Since TMT-based workflows represent a distinct experimental paradigm, the model should prioritize mastering the altered fragmentation patterns and reporter ion interferences inherent to multiplexing. To overcome the scarcity of high-quality, labeled training data, a targeted transfer learning approach should be employed. By fine-tuning the model on large-scale, unlabeled TMT datasets and incorporating un-mutated TMT-sequences as a baseline, the model can achieve a deeper understanding of the TMT-specific search space without being diluted by irrelevant non-labeled spectral features \cite{Zhu2023}.
+
+\subsection{Expanding the Horizon of Discovery}
+The potential for discovery extends beyond single amino acid variants. Future applications should integrate 6-frame translations of the genome or patient-specific transcriptomes to systematically validate the thousands of currently unassigned "high-confidence" spectra identified by the model. Such an interdisciplinary "proteogenomic" pipeline would allow for the discovery of cryptic peptides, alternative splicing events, and non-canonical open reading frames (ORFs) \cite{Nesvizhskii2014}. 
+
+Ultimately, the synergy between \textit{de novo} sequencing and TMT multiplexing provides a scalable framework for precision medicine. Linking discovered variants directly to patient-specific MS3 channels enables a high-throughput characterization of tumor heterogeneity. Future work will focus on tighter integration with clinical metadata and the development of a real-time sequencing pipeline, transforming mass spectrometry from a retrospective analysis tool into a proactive discovery platform for personalized cancer therapy.

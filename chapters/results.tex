@@ -151,3 +151,71 @@ Summing these categories, the \textit{de novo} approach provides plausible seque
 \subsection{From Global Discovery to Specific Variants}
 
 The identification of these additional sequences suggests that the "dark proteome" in these glioma samples is rich in biological variants. The high number of high-confidence predictions that do not perfectly match the database entries—especially those with slight precursor shifts—points towards the presence of non-canonical protein isoforms. In the following sections, we will categorize these findings into specific biological phenomena, namely novel phosphorylation sites (p-sites) and single nucleotide polymorphisms (SNPs).
+
+\subsection{Discovery of SNP-Related Variants}
+
+The discovery of over 670,000 previously unidentified spectra suggests that a significant portion of the "dark proteome" in these samples arises from sequences not represented in the canonical reference database. To investigate whether these unique identifications stem from biological mutations, we analyzed peptides that showed minor sequence deviations (one or two amino acids) compared to the closest database entry. To ensure a conservative and robust analysis, we employed a "clean-hit" filtering strategy: any peptide that produced a perfect match in any experimental fraction or database search was excluded, focusing our analysis solely on truly novel sequence candidates.
+
+By aligning these unique sequences back to the human proteome, we evaluated whether the observed amino acid substitutions could be explained by Single Nucleotide Polymorphisms (SNPs). A substitution was flagged as a potential SNP if the transition between the canonical and the \textit{de novo} predicted amino acid could be achieved by a single nucleotide change within the corresponding codon \cite{Wang2011}. Our analysis revealed that approximately 30\% of all single amino acid deviations and 25\% of dual amino acid deviations are directly explainable by such genomic point mutations. For instance, we identified cases where the model predicted a sequence such as \textit{PAPTIT} instead of the canonical \textit{PEDTIT}. Both mismatches in this example—Glutamate (E) to Alanine (A) and Aspartate (D) to Threonine (T)—are reachable via a single nucleotide exchange in their respective codons (e.g., GAG $\rightarrow$ GCG). 
+
+These findings demonstrate that the \textit{de novo} model effectively captures protein-level manifestations of genetic variability that remain invisible to standard "closed-search" workflows \cite{Alfaro2014}. The high percentage of explainable substitutions confirms that these are not random sequencing errors, but likely reflect the actual biological diversity of the glioma samples. This capability to identify non-canonical isoforms and mutations without requiring matched genomic data highlights the transformative potential of deep learning-based sequencing for personalized proteogenomics \cite{Choudhary2001}.
+
+The identification of these amino acid substitutions at the protein level, however, does not inherently guarantee the presence of a corresponding genomic variant. To validate our findings, we integrated the \textit{de novo} results with genomic data from panel sequencing, covering 500 cancer driver genes. These genomic variants were annotated using the Ensembl Variant Effect Predictor (VEP) to identify potential Single Amino Acid Variants (SAAVs). By cross-referencing our data, we found that 694 identified SNPs were supported by direct genomic evidence, with the predicted SAAVs aligning with genomic mutations at high precision. In several instances, the evidence was further strengthened by multiple unique, overlapping peptides covering the same mutation site, providing independent proteomic confirmation for a single genomic event \cite{Wang2014}.
+
+To ensure the spectral reliability of these novel identifications, we performed a validation based on spectral similarity. We compared the experimental spectra against theoretical fragment patterns using the spectral angle as a metric for similarity. This confirmed that the observed fragmentation matches the predicted pattern of the mutated sequence with high fidelity, whereas a comparison with the non-mutated, canonical sequence would result in significant mass shifts and poor spectral alignment, unless the substitution was isobaric (e.g., Leucine to Isoleucine) \cite{Gessulat2019}.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{plots/application/snpvalidationProsit.png}
+    \caption{Spectral validation of identified SNPs using Prosit-predicted theoretical spectra. The high degree of overlap between experimental and theoretical fragment ions confirms the sequence accuracy of the identified variants.}
+    \label{fig:snp_prosit_validation}
+\end{figure}
+
+The true strength of this proteogenomic approach lies in the context of TMT multiplexing. While database-driven searches often struggle with the increased complexity and altered fragmentation of labeled peptides, TMT-based workflows allow for the simultaneous quantification of these variants across multiple samples. By linking the identified SAAVs with the specific MS3 reporter ion channels, it becomes possible to map a mutation directly to a specific patient within a multiplexed run \cite{Pertosi2016}. This highlights the synergy of expanding \textit{de novo} sequencing to TMT data: it not only uncovers mutations beyond the reach of standard databases but also preserves the quantitative resolution necessary for clinical and biological interpretation in large-scale cohorts.
+
+\subsection{Discovery of PTM Sites}
+
+
+A key advantage of \textit{de novo} peptide sequencing is the ability to identify post-translational modifications (PTMs) without the inherent bias of a restricted search space. To evaluate the model's capacity for PTM discovery, we systematically analyzed predicted phosphorylation sites (p-sites) that were not identified by the MaxQuant (MQ) search.
+
+The methodology for PTM mapping involved several steps: First, all \textit{de novo} predicted peptides were aligned against the human reference proteome. We considered two distinct alignment scenarios: (1) \textit{offby\_0}, representing perfect matches where the predicted sequence (including PTMs) matches the database entry exactly, and (2) \textit{offby\_1\_snp}, allowing for a single mismatch to account for potential single nucleotide polymorphisms or sequence variants. Following alignment, the predicted modification residues were mapped to their specific positions within the protein sequence. To ensure a conservative estimate, we filtered the results to unique p-sites, aggregating redundant spectral identifications to a single site per protein.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{plots/application/plot_offby_0_cancer.png}
+    \caption{Distribution of unique phosphorylation sites identified by MaxQuant (MQ) and the proposed \textit{de novo} peptide sequencing (DNPS) model for selected cancer-related proteins. The results demonstrate a significant expansion of the detectable phospho-landscape.}
+    \label{fig:p_site_distribution}
+\end{figure}
+
+The statistical evaluation highlights a massive expansion of the p-site landscape. For the \textit{offby\_0} category, a total of 224,637 unique p-sites were identified across the dataset. While MaxQuant identified 40,598 sites, the \textit{de novo} model (DNPS) contributed 103,438 sites, with an additional 180,526 sites overlapping or being newly discovered in total (see Figure \ref{fig:p_site_distribution}). In the \textit{offby\_1\_snp} category, the expansion is even more pronounced, with DNPS identifying 77,078 unique sites compared to only 4,977 by MQ. It should be noted, however, that while these numbers are promising, they likely contain a higher noise floor, as stringent false discovery rate (FDR) filtering for \textit{de novo} PTMs is still an evolving area of research.
+
+We took a quick look into the top 5 candidate cancer-related proteins frequently identified in our p-site pipeline:
+
+\begin{itemize}
+    \item \textbf{SRCIN1 (Q9C0H9):} This protein acts as a negative regulator of SRC kinase by activating CSK, thereby inhibiting downstream signaling pathways involved in cell migration \cite{UniprotQ9C0H9}. While databases like PhosphoSitePlus indicate potential regulation via phosphorylation, our model identified a high density of p-sites (e.g., over 80 sites in certain contexts), suggesting a complex regulatory "p-code" that warrants further biochemical validation.
+    
+    \item \textbf{NCOR1 (O75376):} A nuclear receptor corepressor that recruits histone deacetylases to mediate gene repression. Phosphorylation (e.g., via Akt) is known to regulate its dissociation from receptors like PPAR$\alpha$ \cite{NCOR1_PMC}. Our discovery of additional sites suggests a more nuanced control of metabolic gene activation than previously documented.
+    
+    \item \textbf{UBR4 (Q5T4S7):} An E3 ubiquitin-protein ligase involved in the N-degron pathway. Our data shows numerous previously uncharacterized p-sites alongside known ubiquitination sites, likely reflecting its role in orchestrating complex stress responses and protein turnover \cite{UniprotQ5T4S7}.
+    
+    \item \textbf{PML (P29590):} Crucial for the formation of PML-nuclear bodies (PML-NBs), this protein is a central hub for tumor suppression. PTMs are known to regulate its scaffolding function and antiviral responses \cite{PML_PMC}. The expanded p-site map provided by our model could clarify the dynamics of PML-NB assembly in cancer cells.
+    
+    \item \textbf{EGFR (P00533):} As a major therapeutic target in oncology, the phosphorylation of EGFR is well-studied, with over 100 known sites in specialized databases \cite{EGFR_PubChem}. Our model successfully recovered known regulatory tyrosines (e.g., Y1173) while proposing novel threonine and serine sites that may contribute to signaling crosstalk.
+\end{itemize}
+
+Despite these findings, the high number of predicted sites (particularly the 80 sites on SRCIN1) suggests that the current \textit{de novo} PTM output requires further structural filtering. The potential for false positives due to spectral noise or misassignment of mass shifts remains a challenge, necessitating more refined localized scoring in future iterations of the pipeline.
+
+While the high density of predicted sites in proteins like SRCIN1 underscores the need for further structural filtering, our pipeline successfully identified several high-confidence regulatory markers with profound biological implications. The most compelling example is the detection of phosphorylation at \textbf{Serine 15 (p-Ser15)} on the liver isoform of glycogen phosphorylase, \textbf{PYGL} (P06737).
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{plots/application/PYGL_scores.png}
+    \caption{Confidence distribution and spectral evidence for p-Ser15 on PYGL. The identification is supported by 279 PSMs with a mean spectral angle (SA) of 0.7, indicating high reproducibility and spectral fidelity.}
+    \label{fig:pygl_validation}
+\end{figure}
+
+The identification of p-Ser15 on PYGL is supported by substantial spectral evidence, comprising 279 Peptide-Spectrum Matches (PSMs) with a high mean spectral angle of 0.7 across all observations (see Figure \ref{fig:pygl_validation}). In liver metabolism, Ser15 acts as the central "on/off" switch for the enzyme; its phosphorylation by phosphorylase kinase (PHK) converts the inactive \textit{phosphorylase b} into the active \textit{phosphorylase a}, thereby driving the rate-limiting step of glycogenolysis—the breakdown of glycogen into glucose-1-phosphate \cite{Zois2022}.
+
+Although PYGL is primarily known as the hepatic isoform, recent studies have highlighted its critical role in the "glycogen shunt" of cancer cells, particularly in glioblastoma (GBM). Under hypoxic conditions, tumor cells frequently undergo "isoform switching" or upregulate PYGL to utilize glycogen stores as a survival mechanism \cite{Favaro2012}. High expression of PYGL has been linked to poor prognosis in glioma patients and is strongly associated with hypoxia-inducible factor (HIF) signatures \cite{Zois2022, PURE_Ulster}. 
+
+Our detection of p-Ser15-PYGL in these samples serves as a functional marker for the metabolic state of the tumor. The presence of the active \textit{phosphorylase a} form suggests that these cells are actively mobilizing glycogen to maintain energy homeostasis under metabolic stress. Furthermore, research in other cancer models (e.g., HCT116) has shown that p-Ser15 levels increase significantly under chemically induced hypoxia, paralleling other regulatory PTMs like O-GlcNAcylation \cite{PMC9240045}. The ability of our \textit{de novo} approach to confidently recover this specific regulatory site without prior database constraints demonstrates its potential to uncover metabolic drug targets and biomarkers that are central to cancer cell resilience.
