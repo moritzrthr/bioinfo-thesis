@@ -46,7 +46,7 @@ However, these classical approaches face significant limitations. They rely heav
 \section{Deep Learning and Transformer Models in de novo sequencing}
 The limitations of rule-based \textit{de novo} sequencing approaches motivated the adoption of deep learning methods, which learn peptide fragmentation patterns directly from data. By leveraging large annotated MS/MS datasets, neural networks can model complex, instrument-specific fragmentation behavior and generalize across varying experimental conditions. This data-driven paradigm marked a fundamental shift in \textit{de novo} peptide sequencing.
 
-\subsection{The new seq2seq modeling approach}
+\subsection{The new modeling approach}
 The transition to deep learning enabled the modeling of \textit{de novo} sequencing as a sequence-to-sequence (seq2seq) task, translating spectral peak patterns into amino acid sequences. Convolutional Neural Networks (CNNs) were initially used to extract local spectral features, while Recurrent Neural Networks (RNNs), such as Long Short-Term Memory (LSTM) networks, modeled sequential dependencies between amino acids \cite{Tran2017}. Although these models, like DeepNovo, outperformed classical methods in many settings, they exhibited limitations in capturing long-range dependencies and global spectral context, particularly for longer peptides or spectra with sparse fragmentation.
 
 \subsection{Transformer Architecture and Self-Attention}

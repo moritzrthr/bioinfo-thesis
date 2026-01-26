@@ -14,11 +14,14 @@ Traditional search engines like MaxQuant or Sequest rely on predefined databases
 Despite these advances, a significant barrier remains: Tandem Mass Tag (TMT) labeling. TMT is the gold standard for multiplexed quantitative proteomics, enabling the simultaneous analysis of multiple clinical samples. However, TMT labeling introduces systematic mass shifts and significantly alters the fragmentation patterns (e.g., favoring b-ions over y-ions) \cite{Shen2018}. Current \textit{de novo} models, including \textit{Modanovo}, were primarily trained on label-free data and therefore fail to accurately interpret TMT-labeled spectra. This creates a critical bottleneck for clinical proteogenomics, where TMT is the preferred workflow.
 
 \section{Objectives of this Thesis}
-The objective of this thesis is to bridge the gap between high-performance \textit{de novo} sequencing and TMT-based quantitative proteomics. We propose an adaptation of the \textit{Modanovo} framework specifically designed to handle the chemical signatures of TMT labeling. The focus lies on:
-\begin{itemize}
-    \item \textbf{Fine-Tuning:} Adapting the model weights using a large-scale, TMT-labeled dataset to learn specific mass shifts and fragmentation biases.
-    \item \textbf{Architectural Enhancements:} Expanding the token vocabulary to include TMT-specific modifications.
-    \item \textbf{Conditioning:} Implementing covariate embeddings to explicitly inform the model about the TMT status of a spectrum.
-    \item \textbf{Evaluation:} Validating the model on a complex glioma dataset to demonstrate its ability to recover PTMs and SNPs where standard DBIS like MaxQuant reach their limits.
-\end{itemize}
-By unlocking the sequence information in TMT-labeled "dark" spectra, this work aims to provide deeper biological insights into the regulatory networks of cancer.
+
+The primary objective of this thesis is to bridge the gap between high-performance \textit{de novo} peptide sequencing and Tandem Mass Tag (TMT)-based quantitative proteomics. While modern deep learning models like \textit{ModaNovo} have shown remarkable success in identifying peptides with diverse post-translational modifications (PTMs) \cite{Rao2024}, their application to chemically labeled data remains a significant challenge due to altered fragmentation patterns and systematic mass shifts \cite{Mouton2020}. 
+
+This work aims to evaluate whether a transformer-based model can be effectively adapted to recognize the chemical signatures of TMT labeling while maintaining its predictive accuracy for PTMs. The specific goals of this thesis are:
+
+\begin{enumerate}
+    \item \textbf{Model Adaptation and Transfer Learning:} To fine-tune the \textit{ModaNovo} architecture on large-scale TMT-labeled datasets. We investigate whether the model can learn the specific $m/z$ shifts at the N-terminus and lysine residues without losing its ability to generalize to non-TMT data.
+    \item \textbf{Biological Discovery in Glioma Data:} To apply the optimized model to a complex clinical dataset of glioma samples. By analyzing the "dark proteome" of spectra that remain unidentified by standard workflows, we aim to uncover novel PTMs  or single amino acid variants (SAVs) that may provide deeper insights into the molecular landscape of brain tumors \cite{Patsiadou2021}.
+\end{enumerate}
+
+Ultimately, this thesis explores the potential of \textit{de novo} sequencing to transcend the limitations of predefined databases, enabling a more comprehensive view of the proteome in multiplexed quantitative studies.

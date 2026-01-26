@@ -1,11 +1,14 @@
-\clearemptydoublepage
+
 \phantomsection
-\addcontentsline{toc}{chapter}{Kurzzusammenfassung}
 
 \begin{center}
 {\large \bf Kurzzusammenfassung}
 \end{center}
 
-Hier kommt eine kurze Zusammenfassung der Thesis...
+Die Massenspektrometrie (MS)-basierte Proteomik ist ein essenzielles Werkzeug in der klinischen Krebsforschung, da sie funktionelle Einblicke in Tumormechanismen ermöglicht, die über genomische Daten hinausgehen. Während datenbankgestützte Identifizierungsstrategien weiterhin der Goldstandard sind, unterliegen sie einer inhärenten Beschränkung durch den vordefinierten Suchraum. Dabei werden seltene posttranslationale Modifikationen (PTMs) und durch genomische Mutationen verursachte Aminosäurevariationen (SNPs) häufig übersehen. De-novo-Peptidsequenzierung, insbesondere durch moderne Deep-Learning-Architekturen wie Transformer, bietet hier eine unvoreingenommene Alternative. Aktuelle Modelle haben jedoch Schwierigkeiten mit Tandem Mass Tag (TMT)-markierten Daten, bedingt durch systematische Massenverschiebungen und veränderte Fragmentierungsmuster.
 
-Dies ist ein Mock-Beispiel. Passen Sie den Inhalt an.
+In dieser Arbeit wird eine Adaption des Transformer-basierten Modells Modanovo vorgestellt, um die Lücke zwischen De-novo-Sequenzierung und TMT-Multiplexing zu schließen. Durch die Erweiterung des Vokabulars um TMT-spezifische Tokens und die Integration eines Kovariaten-Embeddings für den TMT-Status wurde das Modell darauf trainiert, die chemischen Signaturen der Markierung explizit zu berücksichtigen. Das Fine-Tuning erfolgte auf einem umfassenden Datensatz, bestehend aus 82 % TMT-markierten Multi-PTM-Spektren und einem 18 %igen „Replay-Set“ aus unmarkierten Daten, um katastrophales Vergessen zu verhindern.
+
+Die Ergebnisse auf dem Testdatensatz zeigen eine robuste Performance mit einer Area Under the Precision-Recall Curve (AUPRC) von 0,89 für TMT-Daten. Bemerkenswerterweise wurde die Identifizierung von Modifikationen wie Ubiquitinierung und Monomethylierung im Vergleich zu Nicht-TMT-Daten teilweise verbessert. Eine iterative Hyperparameter-Optimierung, insbesondere die Erweiterung des Isotopenfehlerspektrums und die Nutzung einer Beam-Search-Größe von 5, erwies sich als entscheidend für den Umgang mit der erhöhten spektralen Komplexität.
+
+Angewendet auf einen unabhängigen Gliom-TMT-Datensatz mit 6,48 Millionen Spektren, konnte das Modell das identifizierte Proteom signifikant erweitern. Im Vergleich zu MaxQuant identifizierte der De-novo-Ansatz 40.000 zusätzliche einzigartige Peptide und lieferte hochkonfidente Sequenzvorschläge für über 670.000 zuvor nicht identifizierte Spektren. Zu den biologischen Highlights zählen die Identifizierung von 694 genomisch validierten SNPs sowie der Nachweis der Phosphorylierung an Serin 15 von PYGL – einem zentralen Stoffwechselregulator für das Überleben von Tumorzellen unter Hypoxie. Diese Arbeit zeigt, dass die Integration von TMT-spezifischem Wissen in Transformer-Modelle das „dunkle Proteom“ klinischer Proben erschließt und eine skalierbare Plattform für die personalisierte Proteogenomik bietet.

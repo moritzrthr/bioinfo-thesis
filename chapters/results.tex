@@ -13,8 +13,8 @@ The evaluation follows a peptide-centric approach: a single ground truth peptide
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=\textwidth]{plots/results/PCfacets.png}
-    \caption{Precision-coverage curves across different PTMs. The performance of the final model on TMT-labeled (orange), non-TMT (blue) spectra is shown. Unmodified peptides are shown in light grey for comparison.}
+    \includegraphics[width=0.8\textwidth]{plots/results/PCfacets.png}
+    \caption{Precision-coverage curves at the peptide level across different PTMs. PTM types (Acetylation, Citrullination (Citrull\_deamid), Monomethylation, OGalNAc/OGlcNAc (O-Glyco), Oxidation, Phosphorylation, Pyro-glu, and Ubiquitination) are shown in the different panels. Colors represent the performance of the final model on TMT-labeled (orange) and non-TMT (blue) spectra. Unmodified peptides are shown in light grey for comparison.}
     \label{fig:PCfacets}
 \end{figure}
 
@@ -93,12 +93,12 @@ Out of the total predictions, 1.34 million peptides aligned perfectly with the r
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.85\textwidth]{plots/results/DeNovo_Glioma_TMT_Results.png}
-    \caption{Alignment of \textit{de novo} predictions to the human reference proteome. The proportion of perfect alignments (blue) increases significantly with higher confidence scores. At a score cutoff of $>0.95$, 86.5\% of the 398.4k predictions align perfectly.}
+    \includegraphics[width=0.80\textwidth]{plots/results/DeNovo_Glioma_TMT_Results.png}
+    \caption{Cumulative alignment of \textit{de novo} predictions to the human reference proteome across confidence score thresholds. The plot illustrates the proportion of sequences matching the reference with zero (blue), up to one (orange), and up to two (green) amino acid substitutions. The segments between the curves represent peptides with specific mismatch counts, potentially accounting for Single Nucleotide Polymorphisms (SNPs) or technical sequencing errors. The increasing trend demonstrates the correlation between the model's self-reported confidence and sequence accuracy.}
     \label{fig:alignment_results}
 \end{figure}
 
-The upward trend of the blue bars in Figure \ref{fig:alignment_results} confirms that the internal scoring mechanism of the Transformer architecture effectively reflects the probability of a sequence being biologically "correct." At the highest confidence bin ($>0.95$), the vast majority of sequences are already known to the genome, providing a solid baseline for the subsequent analysis of modified and novel peptides.
+The upward trend of the  bars in Figure \ref{fig:alignment_results} confirms that the internal scoring mechanism of the Transformer architecture effectively reflects the probability of a sequence being biologically "correct." At the highest confidence bin ($>0.95$), the vast majority of sequences are plausibel in sense that they appear in the proteome, providing a solid baseline for the subsequent analysis of modified and novel peptides.
 
 \subsection{Stratified Performance and Modification Stability}
 
@@ -108,6 +108,7 @@ To further investigate the reliability across different chemical states, the pre
     \centering
     \includegraphics[width=0.85\textwidth]{plots/results/rank_precision_offby0_stratified.png}
     \caption{Proportion of perfectly aligned PSMs stratified by modification type and ranked by confidence score.}
+    \caption{Stratified precision-rank analysis of the adpated model. The plot shows the proportion of Peptide-Spectrum Matches (PSMs) achieving a perfect \textit{blastp} alignment to the human reference proteome, ranked by descending model confidence scores. Curves are stratified by modification type: unmodified or just oxidation/acetylation(green), phosphorylation (red), monomethylation (blue), and other PTMs (purple). Symbols represent specific confidence score thresholds ($\geq 0.80, 0.90, 0.95$). While performance remains high ($>90\%$) for most classes at high confidence, monomethylated peptides show a significant precision drop, indicating potential challenges in mass-equivalent deconvolution or model overconfidence for this specific modification.}
     \label{fig:rank_precision}
 \end{figure}
 
@@ -131,7 +132,7 @@ The comparison of unique peptide sequences identified by both methods reveals a 
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.7\textwidth]{plots/results/uniquePeps.png}
-    \caption{Overlap of unique peptide identifications between the proposed \textit{de novo} model and MaxQuant. The model successfully recovers the majority of MQ identifications while contributing 40,000 additional unique sequences.}
+    \caption{Overlap of unique peptide identifications between the adpated \textit{de novo} model and MaxQuant. The model successfully recovers the majority of MQ identifications while contributing 40,000 additional unique sequences.}
     \label{fig:unique_peps}
 \end{figure}
 
@@ -167,9 +168,18 @@ To ensure the spectral reliability of these novel identifications, we performed 
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=\textwidth]{plots/application/snpvalidationProsit.png}
-    \caption{Spectral validation of identified SNPs using Prosit-predicted theoretical spectra. The high degree of overlap between experimental and theoretical fragment ions confirms the sequence accuracy of the identified variants.}
+    \caption{Left: Prosit-predicted spectrum (top) and experimental spectrum
+(bottom) for the reference peptide sequence YAALLK. The cartoon
+illustrates the relevant nucleotide sequence and fragment ion series assuming the reference genome allele. Right: Same as for left, but for the peptide sequence
+YAASLK predicted by our model for the same experimental spectrum. The higher degree of overlap between experimental and theoretical spectrum for the mutated peptide (right) validate the models predictipn.}
     \label{fig:snp_prosit_validation}
 \end{figure}
+
+
+
+ 
+
+
 
 The true strength of this proteogenomic approach lies in the context of TMT multiplexing. While database-driven searches often struggle with the increased complexity and altered fragmentation of labeled peptides, TMT-based workflows allow for the simultaneous quantification of these variants across multiple samples. By linking the identified SAAVs with the specific MS3 reporter ion channels, it becomes possible to map a mutation directly to a specific patient within a multiplexed run \cite{Pertosi2016}. This highlights the synergy of expanding \textit{de novo} sequencing to TMT data: it not only uncovers mutations beyond the reach of standard databases but also preserves the quantitative resolution necessary for clinical and biological interpretation in large-scale cohorts.
 
@@ -183,7 +193,7 @@ The methodology for PTM mapping involved several steps: First, all \textit{de no
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=\textwidth]{plots/application/plot_offby_0_cancer.png}
-    \caption{Distribution of unique phosphorylation sites identified by MaxQuant (MQ) and the proposed \textit{de novo} peptide sequencing (DNPS) model for selected cancer-related proteins. The results demonstrate a significant expansion of the detectable phospho-landscape.}
+    \caption{Distribution of unique phosphorylation sites identified by MaxQuant (MQ) and our  model(DNPS) for selected cancer-related proteins. The results demonstrate a significant expansion of the detectable phospho-landscape.}
     \label{fig:p_site_distribution}
 \end{figure}
 
@@ -210,7 +220,7 @@ While the high density of predicted sites in proteins like SRCIN1 underscores th
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.8\textwidth]{plots/application/PYGL_scores.png}
-    \caption{Confidence distribution and spectral evidence for p-Ser15 on PYGL. The identification is supported by 279 PSMs with a mean spectral angle (SA) of 0.7, indicating high reproducibility and spectral fidelity.}
+    \caption{Confidence distribution for the predictions validating p-Ser15 on PYGL. The identification is supported by 279 PSMs with a mean spectral angle (SA) of 0.7, indicating high reproducibility and spectral fidelity.}
     \label{fig:pygl_validation}
 \end{figure}
 
