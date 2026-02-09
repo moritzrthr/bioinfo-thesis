@@ -1,0 +1,55 @@
+"""ABAENDERUNGEN"""
+1.Separate biology (proteins and PTMs, cancer) from technology and tools 
+(mass spec, DB searching). First start only with biology: why are 
+proteins and PTMs important particularly in the cancer context (even 
+mention glioma cancer maybe). Then move to mass spec as a 
+tool/technology to analyze proteins/PTMs. Also, briefly introduce the 
+concepts. how does mass spec measure proteins, what are MSMS spectra 
+etc. so that a reader very unfamiliar with MS can have a feeling of what
+ it's about
+2.
+you can expand a bit this chapter. assume most readers dont read the 
+background chapter so you can (and should) introduce a bit more the 
+concepts here. also expand on the biology: why to we care about 
+proteins, PTMs in cancer, especially phosphorylation. what could be 
+achieved with DNPS in this context. what has been done which is similar.
+ talk about the potential clinical impact to motivate the thesis etc
+3.maybe mention what TMT is in the first paragraph where you very briefly introduce MS
+4.no... that should not be it! the objective is to get cool biological 
+insights for potential clinical impact on actual patient data and the 
+data happens to be TMT-labeled... we had to expand because of the 
+dataset not for the sake of expanding... i would sell it like that.
+5.Similarly
+ to the Modanovo manuscript, you can have the data curation as a further
+ goal. and say the dataset serves for model development but maybe also 
+for further benchmarking of DNPS tools on TMT data
+
+
+>>>OILD TEXT::::
+\chapter{Introduction}
+\label{chap:introduction}
+
+
+
+\section{The Challenge of the "Dark Proteome" and PTMs}
+Mass spectrometry (MS)-based proteomics has revolutionized our understanding of cellular processes by allowing the large-scale identification and quantification of proteins. However, a significant portion of the acquired MS/MS spectra—often referred to as the "dark proteome"—remains unassigned by traditional database-driven identification strategies (DBIS) \cite{Aebersold2016}. One major reason for this gap is the immense complexity of post-translational modifications (PTMs). PTMs, such as phosphorylation, ubiquitination, and methylation, are crucial regulators of protein function, localization, and signaling pathways, especially in diseases like cancer \cite{Mertins2016}.
+
+Traditional search engines like MaxQuant or Sequest rely on predefined databases. Including a wide array of PTMs in these searches leads to a combinatorial explosion of the search space, which not only increases computational time but also drastically reduces statistical power and increases the false discovery rate (FDR) \cite{Chick2015}. Consequently, DBIS are often "blind" to unexpected or multiple PTMs occurring on the same peptide, leaving biologically critical information hidden in the unassigned data.
+
+\section{De Novo Sequencing and the TMT Gap}
+\textit{De novo} peptide sequencing offers a powerful alternative by predicting the amino acid sequence directly from the fragment spectra without a reference database. Recent advances in deep learning, particularly transformer-based models like \textit{Casanovo} and its PTM-specialized derivative \textit{Modanovo}, have pushed the boundaries of accuracy in this field \cite{Klaproth2024}. These models have shown great potential in uncovering novel PTM patterns and even single nucleotide polymorphisms (SNPs) in highly mutated samples, such as those found in glioma research \cite{Smith2019}.
+
+Despite these advances, a significant barrier remains: Tandem Mass Tag (TMT) labeling. TMT is the gold standard for multiplexed quantitative proteomics, enabling the simultaneous analysis of multiple clinical samples. However, TMT labeling introduces systematic mass shifts and significantly alters the fragmentation patterns (e.g., favoring b-ions over y-ions) \cite{Shen2018}. Current \textit{de novo} models, including \textit{Modanovo}, were primarily trained on label-free data and therefore fail to accurately interpret TMT-labeled spectra. This creates a critical bottleneck for clinical proteogenomics, where TMT is the preferred workflow.
+
+\section{Objectives of this Thesis}
+
+The primary objective of this thesis is to bridge the gap between high-performance \textit{de novo} peptide sequencing and Tandem Mass Tag (TMT)-based quantitative proteomics. While modern deep learning models like \textit{Modanovo} have shown remarkable success in identifying peptides with diverse post-translational modifications (PTMs) \cite{Rao2024}, their application to chemically labeled data remains a significant challenge due to altered fragmentation patterns and systematic mass shifts \cite{Mouton2020}. 
+
+This work aims to evaluate whether a transformer-based model can be effectively adapted to recognize the chemical signatures of TMT labeling while maintaining its predictive accuracy for PTMs. The specific goals of this thesis are:
+
+\begin{enumerate}
+    \item \textbf{Model Adaptation and Transfer Learning:} To fine-tune the \textit{Modanovo} architecture on large-scale TMT-labeled datasets. We investigate whether the model can learn the specific $m/z$ shifts at the N-terminus and lysine residues without losing its ability to generalize to non-TMT data.
+    \item \textbf{Biological Discovery in Glioma Data:} To apply the optimized model to a complex clinical dataset of glioma samples. By analyzing the "dark proteome" of spectra that remain unidentified by standard workflows, we aim to uncover novel PTMs  or single amino acid variants (SAVs) that may provide deeper insights into the molecular landscape of brain tumors \cite{Patsiadou2021}.
+\end{enumerate}
+
+Ultimately, this thesis explores the potential of \textit{de novo} sequencing to transcend the limitations of predefined databases, enabling a more comprehensive view of the proteome in multiplexed quantitative studies.

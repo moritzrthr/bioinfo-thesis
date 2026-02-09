@@ -30,7 +30,7 @@ The dataset comprises:
 During preprocessing, all non-TMT spectra originating from this source were excluded to maintain the integrity of the TMT-specific training phase. Furthermore, the peptide annotations were harmonized by translating Unimod syntax into a mass shift-based syntax. This allows the transformer model to treat modifications as continuous mass offsets rather than discrete categorical labels, which is crucial for identifying rare or novel PTMs.
 
 \subsubsection{Non-TMT Reference Data (Replay Set)}
-To prevent "catastrophic forgetting"—a phenomenon where a model loses its ability to perform original tasks after being fine-tuned on new data—a "Replay Set" of non-TMT data was integrated. This set consists of a highly diverse subset of the MoDaNovo dataset and the Massive Knowledge Base (Massive-KB) \cite{Wang2022}.
+To prevent "catastrophic forgetting"—a phenomenon where a model loses its ability to perform original tasks after being fine-tuned on new data—a "Replay Set" of non-TMT data was integrated. This set consists of a highly diverse subset of the Modanovo dataset and the Massive Knowledge Base (Massive-KB) \cite{Wang2022}.
 
 The composition of this reference set includes:
 \begin{itemize}
