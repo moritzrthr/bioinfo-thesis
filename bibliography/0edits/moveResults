@@ -1,0 +1,179 @@
+OK WIR MUESSEN DIE GANZE RESULTS SECTION UEBERARBEITEN:
+
+
+
+This is the chapter to shine. The start is pretty boring/harsh. Start a bit more paper-like where you summarize again the model and dataset and the aims/goals maybe first. 
+DONT START WITH THE MODEL CONVERGENCE, just put this in nicely somewhere as explained above
+
+
+INCLUDE THIS:
+\subsection{Modification Distribution and Heatmap Analysis}
+To evaluate the coverage of the training data, we visualized the modification density across different residues. This approach was closely oriented towards the \textit{Modanovo} framework to ensure comparability and systematic evaluation of PTM-residue pairs \cite{KlaprothAndrade2025}.
+\begin{figure}[H][htbp]
+    \centering
+    % Erster Plot (TMT)
+    \begin{subfigure}{\textwidth}
+        \centering
+        \includegraphics[width=0.85\textwidth]{plots/methods/heatmap_TMT_fixed.png}
+        
+        \label{fig:heatmap_tmt}
+    \end{subfigure}
+    
+    \vspace{1em} % Ein wenig Abstand zwischen den Bildern
+    
+    % Zweiter Plot (Non-TMT)
+    \begin{subfigure}{\textwidth}
+        \centering
+        \includegraphics[width=0.85\textwidth]{plots/methods/heatmap_NonTMT_fixed.png}
+        
+        \label{fig:heatmap_nontmt}
+    \end{subfigure}
+
+    % Gemeinsame englische Caption
+    \caption{Distribution of identified post-translational modifications (PTMs) across specific amino acid residues. The heatmaps display log-scaled spectral counts for various modifications as a function of the modified residue. (a) shows the TMT-labeled dataset (b) represents the Replay Set }
+    \label{fig:heatmaps_combined}
+\end{figure}
+
+As shown in Figure \ref{fig:heatmaps_combined}, the current data selection strategy provides high coverage for common PTMs such as Oxidation (M) and Phosphorylation (S, T, Y). However, there remains significant optimization potential. Specifically, certain rare PTM-residue combinations or complex multiplexed modifications (e.g., Ubiquitinylation + TMT) exhibit lower spectral counts, which might limit the model's ability to generalize on extremely sparse clinical samples.
+
+
+>>>>HIER DIE ALTE SECITON
+\chapter{Results}
+\label{ch:results}
+
+\section{Model Training and Convergence}
+
+The model was trained until the validation loss showed early signs of stagnation, indicating the onset of overfitting. Convergence was reached after 13 epochs, corresponding to approximately 1,550,000 training steps. To assess the final performance, the model state at this checkpoint was utilized for inference on the complete, independent test dataset.
+
+\section{Performance Evaluation on the test set}
+
+To evaluate the predictive confidence, precision-coverage curves were generated for the different PTM categories and stratified by TMT  vs non-TMT data.  The performance is quantified using the Area Under the Precision-Coverage Curve (AUPCC).
+
+\begin{figure}[H][htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{plots/results/PCfacets.png}
+    \caption{Precision-coverage curves at the peptide level across different PTMs. PTM types (Acetylation, Citrullination (Citrull\_deamid), Monomethylation, OGalNAc/OGlcNAc (O-Glyco), Oxidation, Phosphorylation, Pyro-glu, and Ubiquitination) are shown in the different panels. Colors represent the performance of the final model on TMT-labeled (orange) and non-TMT (blue) spectra. Unmodified non-TMT peptides are shown in light grey for comparison.}
+    \label{fig:PCfacets}
+\end{figure}
+
+\subsection{Comparative Performance: Non-TMT and Modanovo Baseline}
+
+A key requirement for the expanded model was to maintain high performance on standard (non-TMT) data, ensuring that the addition of TMT-related features did not degrade general sequencing accuracy. On non-TMT unmodified peptides, the model achieved an AUPCC of 0.92, which is highly consistent with the performance reported for the Modanovo architecture (AUPCC of 0.93) \cite{Yilmaz2022}.
+
+This stability is further reflected in the specific PTM performance. For instance, the model demonstrated similar accuracy for Phosphorylation on non-TMT data (AUPCC 0.95) staying aligned with the general Modanovo median for phosphorylation (0.93--0.96 depending on the residue) \cite{Yilmaz2022}. Similarly, high performance was observed for Pyro-Glu (AUPCC 0.95), likely due to its restricted occurrence at the peptide N-terminus, a pattern the model successfully internalizes. In contrast, O-Glycosylation (S/T[+203.079]) remains a significant challenge with an AUPCC of 0.39, mirroring the difficulties reported in literature due to low training examples and complex fragmentation \cite{Yilmaz2022}.
+
+
+>>>>HIER RESULTS AUS MODANOVO MAUNSKIRPT
+Results 
+A dataset for developing de novo PTM identification models 
+We compiled a dataset combining a subset of the MassIVE-KB human spectral libraries (v1), 
+consisting mostly of unmodified peptides and 7 amino acid-PTM combinations, with a 
+curated subset of spectra from MULTI-PTM (part of PROSPECT-PTM (33) and the 
+The copyright holder for this
+bioRxiv preprint 
+doi: 
+https://doi.org/10.1101/2025.09.12.675784
+; 
+this version posted September 16, 2025. 
+preprint (which was not certified by peer review) is the author/funder, who has granted bioRxiv a license to display the preprint in 
+perpetuity. It is made available under a
+CC-BY-NC 4.0 International license
+.
+Modanovo: A Unified Model for PTM-Aware de Novo Sequencing 
+ProteomeTools project (34)). The latter includes synthetic peptides modified with a range of 
+biologically relevant post-translational modifications (PTMs) such as phosphorylation, 
+acetylation, ubiquitylation, and methylation, which were crucially missing in MassIVE-KB 
+(v1). Due to the scarcity of large, well-annotated experimental datasets covering diverse 
+PTMs, this combination allowed us to leverage both data from in vivo experiments as well as 
+from synthetic peptides to improve model generalization. In total, this combined dataset, 
+denoted as development dataset throughout this manuscript, consisted of approximately 11 
+million PSMs spanning 20 canonical amino acids and 19 distinct PTM-amino acid 
+combinations, 12 of them not being covered by Casanovo and most of its successor models 
+(Fig. 1A, B, Supplementary Table 1), enabling comprehensive learning and evaluation 
+across a broad spectrum of peptide modifications. 
+Modanovo extends Casanovo to 12 new amino acid-PTM combinations 
+Based on this development dataset, we developed Modanovo, a transformer-based model 
+designed to identify modified peptides directly from tandem mass spectra. To enable this, we 
+fine-tuned Casanovo’s transformer architecture (Fig. 1C), initializing the model with weights 
+from a Casanovo model previously trained on MassIVE-KB (v1). To accommodate the 
+expanded vocabulary arising from PTM-amino acid combinations treated as distinct tokens, 
+we adjusted the shapes of the input embedding layer and the final linear projection layer 
+(Methods). The new parameters corresponding to the expanded token set were initialized by 
+averaging the weights of existing tokens in their respective layers, providing a meaningful 
+starting point rather than random initialization. We then fine-tuned the entire model 
+end-to-end, allowing it to retain knowledge of canonical peptide fragmentation patterns while 
+adapting to the variability introduced by PTMs.  
+Figure 1 | Modanovo identifies post-translationally modified peptide sequences using a mixture of 
+spectra from in vivo experiments and synthetic peptides for model development. A, Number of 
+peptide-spectrum matches (PSMs) for modified and unmodified peptides used for model development from two 
+different data sources: the MassIVE-KB (v1) human spectral libraries (dark and light green) and from a subset of 
+The copyright holder for this
+bioRxiv preprint 
+doi: 
+https://doi.org/10.1101/2025.09.12.675784
+; 
+this version posted September 16, 2025. 
+preprint (which was not certified by peer review) is the author/funder, who has granted bioRxiv a license to display the preprint in 
+perpetuity. It is made available under a
+CC-BY-NC 4.0 International license
+.
+Modanovo: A Unified Model for PTM-Aware de Novo Sequencing 
+PROSPECT-PTM (MULTI-PTM, dark and light mustard). B, Heatmap showing the number of PSMs used for 
+model development across PTM types and modified residues. Rows correspond to PTM types, columns to 
+residues. The side color strip indicates the data source (MULTI-PTM, MassIVE-KB, or both). The heatmap is 
+colored on a logarithmic scale, with darker blue shades representing higher PSM counts. C, An autoregressive 
+transformer encoder and decoder architecture based on Casanovo allows the identification of post-translationally 
+modified peptides directly from tandem mass (MS2) spectra. The model is trained starting with weight 
+initialization from Casanovo’s pre-trained weights. The model components for the amino acid (AA) embeddings 
+and final linear layer (in blue) are expanded to allow the modification of new post-translationally modified 
+residues. 
+Modanovo confidently identifies modified synthetic peptides 
+We first assessed whether Modanovo’s performance remained comparable to that of 
+Casanovo on unmodified peptides and the PTMs covered by Casanovo, which served as the 
+starting point of our fine-tuning approach for PTM expansion. Specifically, we evaluated both 
+models on the test set of the MassIVE-KB (v1) dataset, which was also used to originally 
+develop and evaluate Casano
+
+
+
+>>>HOIER DIE GROBE IDEE:
+
+Kurze Zusammenfassung: Transformer, Modanovo-Basis), welche Daten compiled (TMT-labeled vs. Replay/Non-TMT) ca 80 20 split.
+
+Ziel: Bestätigung, dass das Modell sowohl die "alte" Welt (Standard-PTMs) als auch die "neue" Welt (TMT) beherrscht.
+
+
+Dataset Composition and Modification Coverage
+
+Visualisierung der Datenbasis ( Heatmaps) des erstellten finetuning sets.
+
+Inhalt: Analyse der PTM-Verteilung. Warum sind bestimmte Kombinationen (z.B. Phosphorylierung) häufiger und andere (Ubiquitinierung + TMT) seltener? Das erklärt spätere Performance-Unterschiede.
+
+
+Model Training and Stability
+
+Inhalt: Wann hat das Modell konvergiert (13 Epochen)
+
+
+De Novo Sequencing Performance (AUPCC Analysis)
+
+Benchmark gegen Modanovo/Casanovo eig alles wie bisher ca
+TMT vs. Non-TMT: Wie schlägt sich das Modell, wenn TMT dazukommt? (Basierend auf deiner Abbildung PCfacets).
+
+PTM-spezifische Analyse: * High-performer: Phosphorylierung, Pyro-Glu 
+
+Low-performer: O-Glycosylation 
+
+
+>>>>NUR ZUR INFO DANACH GEHTS DAMIT WEITER:
+4.2.2 Generalization on TMT-Labeled Data 
+The global performance on TMT data (AUPCC 0.89) is slightly lower than on non-TMT data (AUPCC 0.92), reflecting the increased spectral complexity in troduced by the chemical labels. 
+Specific findings for TMT-labeled PTMs include: 
+• Ubiquitination and Monomethylation: Interestingly, the model per formed slightly better on TMT-labeled Ubiquitination (AUPCC 0.95) com pared to its non-TMT counterpart (AUPCC 0.94). For Monomethylation, the gap was even more pronounced (TMT: 0.94 vs. non-TMT: 0.82), sug gesting that the systematic mass shifts provided by TMT might aid in dis tinguishing these specific modifications in certain contexts. 
+• Acetylation: Performance remained robust across both categories (TMT: 0.91 vs. non-TMT: 0.92), indicating that Acetylation is identified with high confidence regardless of the labeling strategy. 
+
+
+
+
+
+>>>>BITTE MACH ERSTMAL N VORSCHLAG FUER DIE INHALTE IN STICHPUNKTEN UND FRAG WENN WAS UNKLAR IS UND HALLUZINIER NIX DAZU

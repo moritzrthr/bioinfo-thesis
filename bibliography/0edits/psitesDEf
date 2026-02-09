@@ -1,0 +1,10 @@
+METHODS:you do need something about the p-sites: how do you defined them/evaluate them etc
+
+
+we need to add smthg before the sepctral evidence thing about the psites
+
+we took the peptides unmodifided version mapped to the proteome/their proteins
+then we looked at the predictions to see all the modifcations
+then we saw if there was a phsosporylation predicted either from mqxquant or modanovoTMT or both we took the index of the position in peptide and using the alignment mapped it back to the global protein position
+
+we can then validate those by seeing how many unique peptides gave evidence for the p site and how the scores and alsignment was moreover we lookde into literature existing research 

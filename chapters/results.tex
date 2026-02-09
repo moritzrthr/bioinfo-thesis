@@ -1,54 +1,89 @@
+
+
+
 \chapter{Results}
 \label{ch:results}
 
-\section{Model Training and Convergence}
 
-The model was trained until the validation loss showed early signs of stagnation, indicating the onset of overfitting. Convergence was reached after 13 epochs, corresponding to approximately 1,550,000 training steps. To assess the final performance, the model state at this checkpoint was utilized for inference on the complete, independent test dataset.
+Starting from the \textit{Modanovo} checkpoint and expanding the architecture, the primary objective was to bridge the gap between specialized PTM identification and large-scale quantitative TMT workflows. We first characterize the underlying dataset and modification coverage before analyzing the model's sequencing accuracy through precision-coverage metrics.
 
-\section{Performance Evaluation on the test set}
+\section{A dataset for robust expansion: TMT-labeled spectra with diverse PTMs}
 
-To evaluate the predictive confidence, precision-coverage curves were generated for the different PTM categories and stratified by TMT  vs non-TMT data.  The performance is quantified using the Area Under the Precision-Coverage Curve (AUPCC).
+The performance of deep learning models in \textit{de novo} sequencing is fundamentally tied to the diversity and quality of the training data. Our fine-tuning dataset was strategically compiled to represent both the "classical" PTM landscape and the specific challenges of TMT-multiplexed proteomics. The final dataset consists of a curated mixture of TMT-labeled spectra and a "Replay Set" of non-TMT spectra, maintaining an approximate 80:20 ratio to ensure the model retains its ability to generalize across different experimental conditions.
 
-The evaluation follows a peptide-centric approach: a single ground truth peptide contributes to the curves of all modifications it contains. For instance, a peptide sequence such as \enquote{[+229.997]-PEPT[+79.966]IDEK[+14.016]} is included in both the precision-coverage curve for phosphorylated threonine (T[+79.966]) and monomethylated lysine (K[+14.016]). In all subsequent analyses, the performance on unmodified peptides (light grey in Figure \ref{fig:PCfacets}) serves as a reference baseline.
+To demonstrate the PTM-coverage of the training data, we visualized the modification density across different residues. 
+
+
+
+\begin{figure}[H][htbp]
+    \centering
+    % Erster Plot (TMT)
+    \begin{subfigure}{\textwidth}
+        \centering
+        \includegraphics[width=0.85\textwidth]{plots/methods/heatmap_TMT_fixed.png}
+        \label{fig:heatmap_tmt}
+    \end{subfigure}
+    
+    \vspace{1em} 
+    
+    % Zweiter Plot (Non-TMT)
+    \begin{subfigure}{\textwidth}
+        \centering
+        \includegraphics[width=0.85\textwidth]{plots/methods/heatmap_NonTMT_fixed.png}
+        \label{fig:heatmap_nontmt}
+    \end{subfigure}
+
+    \caption{Distribution of identified post-translational modifications (PTMs) across specific amino acid residues. The heatmaps display log-scaled spectral counts for various modifications as a function of the modified residue. (a) shows the TMT-labeled dataset (b) represents the Replay Set.}
+    \label{fig:heatmaps_combined}
+\end{figure}
+
+As shown in Figure \ref{fig:heatmaps_combined}, the compiled data set  provides high coverage for common PTMs such as Oxidation (M) and Phosphorylation (S, T, Y) we tried to keep the TMT and non TMT PTM landscape similar to not have biases in it. However like in Modanovo, there remains some optimization potential. Specifically, certain rare PTM-residue combinations or complex multiplexed modifications (e.g., Ubiquitinylation + TMT) exhibit lower spectral counts. This sparsity is a known challenge in training robust \textit{de novo} models, caused by the limited number of spectra with data base search identification.
+
+\section{Modanovo-TMT confidently identifies peptides in multiplexed proteomics data}
+
+The model was initialized with weights from the Modanovo base, allowing it to leverage pre-learned features of peptide fragmentation. Training was conducted until the validation loss showed early signs of increase, indicating the onset of overfitting. Convergence was reached after 13 epochs, corresponding to approximately 1,550,000 training steps. This stability suggests that the model successfully integrated the TMT-specific fragmentation patterns and expanded vocabulary.
+
+To evaluate the predictive confidence, precision-coverage curves were generated for different PTM categories, stratified by TMT vs. non-TMT data (Figure \ref{fig:PCfacets}). The performance is quantified using the Area Under the Precision-Coverage Curve (AUPCC), providing a robust measure of sequencing quality across varying confidence thresholds.
 
 \begin{figure}[H][htbp]
     \centering
     \includegraphics[width=0.8\textwidth]{plots/results/PCfacets.png}
-    \caption{Precision-coverage curves at the peptide level across different PTMs. PTM types (Acetylation, Citrullination (Citrull\_deamid), Monomethylation, OGalNAc/OGlcNAc (O-Glyco), Oxidation, Phosphorylation, Pyro-glu, and Ubiquitination) are shown in the different panels. Colors represent the performance of the final model on TMT-labeled (orange) and non-TMT (blue) spectra. Unmodified peptides are shown in light grey for comparison.}
+    \caption{Precision-coverage curves at the peptide level across different PTMs. PTM types are shown in the different panels. Colors represent the performance of the final model on TMT-labeled (orange) and non-TMT (blue) spectra. Unmodified non-TMT peptides are shown in light grey for comparison.}
     \label{fig:PCfacets}
 \end{figure}
 
-\subsection{Comparative Performance: Non-TMT and Modanovo Baseline}
+A key requirement for the expanded model was to maintain high performance on standard (non-TMT) data. On non-TMT unmodified peptides, the model achieved an AUPCC of 0.92, which is highly consistent with the performance reported for the original Modanovo architecture (AUPCC of 0.93) \cite{Yilmaz2022, KlaprothAndrade2025}. This demonstrates that the inclusion of TMT-related features does not degrade general sequencing accuracy.
 
-A key requirement for the expanded model was to maintain high performance on standard (non-TMT) data, ensuring that the addition of TMT-related features did not degrade general sequencing accuracy. On non-TMT unmodified peptides, the model achieved an AUPCC of 0.92, which is highly consistent with the performance reported for the Modanovo architecture (AUPCC of 0.93) \cite{Yilmaz2022}.
+Specific PTM performance highlights the model's strengths and limitations:
+\begin{itemize}
+    \item \textbf{High-Performance PTMs:} The model demonstrated excellent accuracy for Phosphorylation (AUPCC 0.95) and Pyro-Glu (AUPCC 0.95). The high precision for Pyro-Glu is likely due to its restricted occurrence at the peptide N-terminus, a positional pattern that transformer architectures can effectively internalize \cite{Yilmaz2022}.
+    \item \textbf{Challenging Modifications:} In contrast, O-Glycosylation (S/T[+203.079]) remains a significant challenge with an AUPCC of 0.39. This mirrors difficulties reported in literature, attributed to both the scarcity of training examples and the complex, often labile fragmentation patterns of glycopeptides which deviate from standard b- and y-ion series.
+\end{itemize}
 
-This stability is further reflected in the specific PTM performance. For instance, the model demonstrated similar accuracy for Phosphorylation on non-TMT data (AUPCC 0.95) staying aligned with the general Modanovo median for phosphorylation (0.93--0.96 depending on the residue) \cite{Yilmaz2022}. Similarly, high performance was observed for Pyro-Glu (AUPCC 0.95), likely due to its restricted occurrence at the peptide N-terminus, a pattern the model successfully internalizes. In contrast, O-Glycosylation (S/T[+203.079]) remains a significant challenge with an AUPCC of 0.39, mirroring the difficulties reported in literature due to low training examples and complex fragmentation \cite{Yilmaz2022}.
 
-\subsection{Generalization on TMT-Labeled  Data}
 
-The global performance on TMT data (AUPCC 0.89) is slightly lower than on non-TMT data (AUPCC 0.92), reflecting the increased spectral complexity introduced by the chemical labels.
 
-Specific findings for TMT-labeled PTMs include:
+The global performance on TMT data (AUPCC 0.89) is slightly lower than on non-TMT data (AUPCC 0.92). Besides the lack of data it could also be explained by increased spectral complexity due to the  mass shifts and altered fragmentation patterns introduced by TMT labeling. However, the model's ability to maintain high precision across a wide range of PTMs in TMT-labeled spectra confirms that it has successfully learned to interpret the chemical signatures of multiplexed proteomics data
+Specific findings for TMT-labeled PTMs include.
 \begin{itemize}
     \item \textbf{Ubiquitination and Monomethylation:} Interestingly, the model performed slightly better on TMT-labeled Ubiquitination (AUPCC 0.95) compared to its non-TMT counterpart (AUPCC 0.94). For Monomethylation, the gap was even more pronounced (TMT: 0.94 vs. non-TMT: 0.82), suggesting that the systematic mass shifts provided by TMT might aid in distinguishing these specific modifications in certain contexts.
     \item \textbf{Acetylation:} Performance remained robust across both categories (TMT: 0.91 vs. non-TMT: 0.92), indicating that Acetylation is identified with high confidence regardless of the labeling strategy.
-    \item \textbf{Oxidation:} A noticeable decrease in performance was observed for TMT-labeled oxidized peptides (AUPCC 0.81) compared to non-TMT (AUPCC 0.90), pointing towards potential interference between the TMT-label fragments and the neutral losses associated with methionine oxidation.
-\end{itemize}
+    \end{itemize}
 
 The  final precision at full coverage (e.g., 0.59 on all tmt-labeled spectra) demonstrates that the model provides a reliable foundation for uncovering biological insights in multiplexed quantitative proteomics experiments.
 
 
-\section{Hyperparameter Optimization and Isotopic Sensitivity}
+\section{Isotopic Sensitivity and Beam Search in TMT Data}
 
 A critical challenge identified during the evaluation of TMT-labeled data was the increased frequency of non-monoisotopic precursor selection. In TMT multiplexed samples, the high density of ions and the chemical labeling itself often lead to a shift where the instrument triggers fragmentation on an isotopic peak rather than the monoisotopic mass. To address this, the model configuration was iteratively optimized.
 
-\subsection{Isotope Error Range and Beam Search Synergy}
-
-The initial baseline configuration (Config0) utilized a restrictive isotope error range of $0,1$, which often forced the model to strictly adhere to the theoretical monoisotopic mass, leading to sequence errors when the precursor mass was incorrectly assigned by the instrument. By expanding this range to $0,3$ (Config ISO), the model gained the necessary flexibility to account for these systematic mass shifts without being penalized for "off-by-one" or "off-by-two" Dalton errors.
+The isotope error range serves as a corrective buffer during inference for misassigned precursor masses — a frequent artifact where the mass spectrometer selects a $^{13}C$ isotope peak instead of the monoisotopic mass.
+The initial baseline configuration (Config0) utilized a restrictive isotope error range of $0,1$, which often forced the model to strictly adhere to the theoretical monoisotopic mass, leading to sequence errors when the precursor mass was incorrectly assigned by the instrument. 
+By expanding this range to $0,3$ (Config ISO), the model gained the necessary flexibility to account for these systematic mass shifts without being penalized for small mass devitation errors.
 
 Furthermore, while literature for models like Casanovo suggests that increasing the beam size has diminishing returns, our results indicate a strong synergy between isotope flexibility and search breadth. Increasing the beam size from 1 to 5 (Config FINAL) allowed the decoder to explore a wider sequence space, which proved essential for resolving the complex fragmentation patterns of TMT-labeled and modified peptides.
 
-\subsection{Quantitative Impact of Configuration Changes}
+
 
 The optimization process led to a stepwise improvement in all global metrics (see Table \ref{tab:config_comparison}). The global AUPCC increased from 0.8746 (Config0) to 0.8817 (ISO) and reached its peak at 0.8988 in the FINAL configuration. Notably, the most significant breakthrough occurred in the jump to the FINAL configuration, where the global precision at full coverage rose from 0.5726 to 0.6146.
 
@@ -64,12 +99,11 @@ Global Precision (Cov 1.0) & 0.5726 & 0.5726              & 0.6146              
 \end{tabular}
 \end{table}
 
-\subsection{Impact on Specific Modification Classes}
 
 The transition to Config FINAL particularly benefited complex PTMs:
 
 \begin{itemize}
-    \item \textbf{Ubiquitination:} This category showed a massive precision jump from 0.6675 to 0.7359. The combination of expanded isotope ranges and increased beam size likely allowed the model to better identify the characteristic GlyGly-remnant fragmentation patterns, which are often obscured in TMT-labeled spectra.
+    \item \textbf{Ubiquitination:} This category showed a  precision jump from 0.6675 to 0.7359. The combination of expanded isotope ranges and increased beam size likely allowed the model to better identify the characteristic GlyGly-remnant fragmentation patterns, which are often obscured in TMT-labeled spectra.
     \item \textbf{Phosphorylation:} As the largest dataset (N=293,256), the shift from 0.8556 (Config0) to 0.8784 (AUPCC) and a precision increase to 0.5656 is statistically the most significant indicator of the model's enhanced robustness.
     \item \textbf{Monomethylation:} The AUPCC rose from 0.9032 to 0.9326. Remarkably, TMT-labeled methylated peptides achieved a significantly higher AUPCC (0.9443) than their non-TMT counterparts (0.8211). This suggests that the model learned to leverage the TMT-induced mass shifts as a "fingerprint" to distinguish methylation from isobaric interferences more effectively than in unlabeled data.
 \end{itemize}
@@ -99,7 +133,7 @@ Out of the total predictions, 1.34 million peptides aligned perfectly with the r
 \end{figure}
 
 The upward trend of the  bars in Figure \ref{fig:alignment_results} confirms that the internal scoring mechanism of the Transformer architecture effectively reflects the probability of a sequence being biologically "correct." At the highest confidence bin ($>0.95$), the vast majority of sequences are plausibel in sense that they appear in the proteome, providing a solid baseline for the subsequent analysis of modified and novel peptides.
-
+In addition to proteome alignment, the plausibility of the  predictions was strengthened by comparing the theoretical mass of the predicted sequences with the observed precursor $m/z$. All the peptides starting from the second bin fulfill this requirement.
 \subsection{Stratified Performance and Modification Stability}
 
 To further investigate the reliability across different chemical states, the precision of the predictions was stratified by modification type and ranked by confidence (PSM Rank). In this analysis, the "Rank 1" prediction represent the highest-confidence spectrum.
@@ -107,7 +141,7 @@ To further investigate the reliability across different chemical states, the pre
 \begin{figure}[H][htbp]
     \centering
     \includegraphics[width=0.85\textwidth]{plots/results/rank_precision_offby0_stratified.png}
-    \caption{Proportion of perfectly aligned PSMs stratified by modification type and ranked by confidence score.}
+    
     \caption{Stratified precision-rank analysis of the adpated model. The plot shows the proportion of Peptide-Spectrum Matches (PSMs) achieving a perfect \textit{blastp} alignment to the human reference proteome, ranked by descending model confidence scores. Curves are stratified by modification type: unmodified or just oxidation/acetylation(green), phosphorylation (red), monomethylation (blue), and other PTMs (purple). Symbols represent specific confidence score thresholds ($\geq 0.80, 0.90, 0.95$). While performance remains high ($>90\%$) for most classes at high confidence, monomethylated peptides show a significant precision drop, indicating potential challenges in mass-equivalent deconvolution or model overconfidence for this specific modification.}
     \label{fig:rank_precision}
 \end{figure}
@@ -116,14 +150,13 @@ As shown in Figure \ref{fig:rank_precision}, most modifications follow the expec
 
 A notable outlier is Monomethylation. While this modification showed excellent performance in the AUPCC metrics on the test set, the proportion of perfect alignments drops more sharply with increasing rank compared to other modifications. This discrepancy suggests the absolute mass shifts or the localization of the methyl group might still lead to mismatches during genomic alignment in real-world samples.
 
-\subsection{Summary of Validation}
 
 The alignment results demonstrate that the expanded model produces biologically plausible peptide sequences. The high correlation between the model's confidence score and the genomic match rate validates the use of these scores as a filter for discovery. This foundation allows for the exploration of spectra that remain unidentified by traditional database-driven methods, such as MaxQuant, which will be discussed in the following section.
 
 
-\section{Uncovering the Dark Proteome: Comparison with MaxQuant}
+\section{Complementing the state of the art:MaxQuant }
 
-A primary objective of this study was to evaluate the extent to which \textit{de novo} peptide sequencing can expand the identification landscape beyond the limitations of database-driven methods. By comparing our results with those obtained via MaxQuant (MQ), we can quantify the "dark matter" of the proteome—spectra that contain high-quality information but remain unidentified by traditional search engines.
+A primary objective of this study was to evaluate the extent to which \textit{de novo} peptide sequencing can expand the identification landscape beyond the limitations of database-driven methods. By comparing our results with those obtained via MaxQuant (MQ), we can quantify the "dark matter" of the proteome—spectra that contain high-quality information but remain unidentified by MaxQuant.
 
 \subsection{Unique Peptide Identifications}
 
@@ -136,30 +169,35 @@ The comparison of unique peptide sequences identified by both methods reveals a 
     \label{fig:unique_peps}
 \end{figure}
 
-Crucially, the model discovered an additional 40,000 unique peptides that were entirely absent from the MQ results. Conversely, only a negligible fraction (approximately 30 peptides) was identified by MQ but missed by our model, indicating that the \textit{de novo} approach covers nearly the entire search space of the database-driven method while doubling the number of unique sequences.
+
+Modanovo-TMT demonstrated a high degree of overlap with the established workflow, successfully identifying 40,000 unique peptides that were also present in the MQ results. This substantial intersection further confirms the model's ability to reliably recover standard peptide sequences. 
+
+Beyond this shared proteomic space, MQ identified approximately 30,000 peptides that remained exclusive to the database search. In contrast, the \textit{de novo} approach identified an additional 40,000 unique sequences that were not captured by the MQ search. These findings indicate that while both methods are complementary, the \textit{de novo} model effectively doubles the number of unique peptide candidates by uncovering sequences that lie beyond the constraints of traditional database matching, while still maintaining high sensitivity for the core proteome.
+
+
 
 \subsection{Identification of Previously Unidentified Spectra}
 
-The true potential of the model is reflected at the spectrum level (PSMs). In the analyzed dataset, MaxQuant provided identifications for 1,510,866 spectra. Our model was able to provide high-confidence sequences for a significant portion of the remaining "dark" spectra:
+Beyond the unique peptide identifications we looked at the spectrum level (PSMs). In the analyzed dataset, MaxQuant provided identifications for 1,510,866 spectra. Our model was able to provide high-confidence sequences for a significant portion of the remaining "dark" spectra:
 
 \begin{itemize}
     \item \textbf{High-Confidence Matches (Score $> 0.8$):} We identified 446,290 additional spectra with a confidence score above 0.8. Based on our previous alignment validation, this score range corresponds to highly reliable peptide sequences.
-    \item \textbf{Precursor-Shifted Matches (Score $-0.2 < s < 0$):} Interestingly, we found 231,208 spectra in a score range that indicates high sequencing confidence but carries a penalty ($-1$) due to a precursor mass mismatch. These spectra likely represent peptides with unexpected modifications or amino acid substitutions (SNPs) that shift the precursor mass beyond the tolerance of the theoretical database entry, yet yield clear fragmentation patterns.
+    \item \textbf{Precursor-Shifted Matches (Score $-0.2 < s < 0$):} Interestingly, we found 231,208 spectra in a score range that indicates high sequencing confidence but carries a penalty ($-1$) due to a precursor mass mismatch. 
 \end{itemize}
 
-Summing these categories, the \textit{de novo} approach provides plausible sequence candidates for over 670,000 spectra that were previously discarded in the MQ workflow. This substantial increase in spectral utilization highlights the model's ability to move beyond the "closed-search" paradigm.
+Summing these categories, the \textit{de novo} approach provides interesting sequence candidates for over 670,000 spectra that were previously discarded in the MQ workflow. This substantial increase in spectral utilization must of course be further analyzed and validated with different approaches like aligning to a 6-frame translation.
 
-\subsection{From Global Discovery to Specific Variants}
-
-The identification of these additional sequences suggests that the "dark proteome" in these glioma samples is rich in biological variants. The high number of high-confidence predictions that do not perfectly match the database entries—especially those with slight precursor shifts—points towards the presence of non-canonical protein isoforms. In the following sections, we will categorize these findings into specific biological phenomena, namely novel phosphorylation sites (p-sites) and single nucleotide polymorphisms (SNPs).
 
 \subsection{Discovery of SNP-Related Variants}
 
-The discovery of over 670,000 previously unidentified spectra suggests that a significant portion of the "dark proteome" in these samples arises from sequences not represented in the canonical reference database. To investigate whether these unique identifications stem from biological mutations, we analyzed peptides that showed minor sequence deviations (one or two amino acids) compared to the closest database entry. To ensure a conservative and robust analysis, we employed a "clean-hit" filtering strategy: any peptide that produced a perfect match in any experimental fraction or database search was excluded, focusing our analysis solely on truly novel sequence candidates.
+
+The identification of these additional sequences suggests that the "dark proteome" in these glioma samples is rich in biological variants. The high number of high-confidence predictions that do not perfectly match the database entries—especially those with slight precursor shifts—points towards the presence of non-canonical protein isoforms. 
+
+The discovery of over 670,000 previously unidentified spectra suggests that a significant portion of the "dark proteome" in these samples arises from sequences not represented in the canonical reference database or not passing the FDR threshold. To investigate whether these unique identifications stem from biological mutations, we analyzed peptides that showed minor sequence deviations (one or two amino acids) compared to the closest database entry. To ensure a conservative and robust analysis, we employed a "clean-hit" filtering strategy: any peptide that produced a perfect match in any experimental fraction or database search was excluded, focusing our analysis solely on truly novel sequence candidates.
 
 By aligning these unique sequences back to the human proteome, we evaluated whether the observed amino acid substitutions could be explained by Single Nucleotide Polymorphisms (SNPs). A substitution was flagged as a potential SNP if the transition between the canonical and the \textit{de novo} predicted amino acid could be achieved by a single nucleotide change within the corresponding codon \cite{Wang2011}. Our analysis revealed that approximately 30\% of all single amino acid deviations and 25\% of dual amino acid deviations are directly explainable by such genomic point mutations. For instance, we identified cases where the model predicted a sequence such as \textit{PAPTIT} instead of the canonical \textit{PEDTIT}. Both mismatches in this example—Glutamate (E) to Alanine (A) and Aspartate (D) to Threonine (T)—are reachable via a single nucleotide exchange in their respective codons (e.g., GAG $\rightarrow$ GCG). 
 
-These findings demonstrate that the \textit{de novo} model effectively captures protein-level manifestations of genetic variability that remain invisible to standard "closed-search" workflows \cite{Alfaro2014}. The high percentage of explainable substitutions confirms that these are not random sequencing errors, but likely reflect the actual biological diversity of the glioma samples. This capability to identify non-canonical isoforms and mutations without requiring matched genomic data highlights the transformative potential of deep learning-based sequencing for personalized proteogenomics \cite{Choudhary2001}.
+These findings demonstrate that the \textit{de novo} model effectively captures protein-level manifestations of genetic variability that remain invisible to standard database-search workflows \cite{Alfaro2014}. The high percentage of explainable substitutions confirms that these are not random sequencing errors, but likely reflect the actual biological diversity of the glioma samples. This capability to identify non-canonical isoforms and mutations without requiring matched genomic data highlights the transformative potential of deep learning-based sequencing for personalized proteogenomics \cite{Choudhary2001}.
 
 The identification of these amino acid substitutions at the protein level, however, does not inherently guarantee the presence of a corresponding genomic variant. To validate our findings, we integrated the \textit{de novo} results with genomic data from panel sequencing, covering 500 cancer driver genes. These genomic variants were annotated using the Ensembl Variant Effect Predictor (VEP) to identify potential Single Amino Acid Variants (SAAVs). By cross-referencing our data, we found that 694 identified SNPs were supported by direct genomic evidence, with the predicted SAAVs aligning with genomic mutations at high precision. In several instances, the evidence was further strengthened by multiple unique, overlapping peptides covering the same mutation site, providing independent proteomic confirmation for a single genomic event \cite{Wang2014}.
 
@@ -220,11 +258,11 @@ While the high density of predicted sites in proteins like SRCIN1 underscores th
 \begin{figure}[H][htbp]
     \centering
     \includegraphics[width=0.8\textwidth]{plots/application/PYGL_scores.png}
-    \caption{Confidence distribution for the predictions validating p-Ser15 on PYGL. The identification is supported by 279 PSMs with a mean spectral angle (SA) of 0.7, indicating high reproducibility and spectral fidelity.}
+    \caption{Confidence distribution for the predictions validating p-Ser15 on PYGL. The identification is supported by 279 PSMs, indicating high reproducibility.}
     \label{fig:pygl_validation}
 \end{figure}
 
-The identification of p-Ser15 on PYGL is supported by substantial spectral evidence, comprising 279 Peptide-Spectrum Matches (PSMs) with a high mean spectral angle of 0.7 across all observations (see Figure \ref{fig:pygl_validation}). In liver metabolism, Ser15 acts as the central "on/off" switch for the enzyme; its phosphorylation by phosphorylase kinase (PHK) converts the inactive \textit{phosphorylase b} into the active \textit{phosphorylase a}, thereby driving the rate-limiting step of glycogenolysis—the breakdown of glycogen into glucose-1-phosphate \cite{Zois2022}.
+The identification of p-Ser15 on PYGL is supported by substantial spectral evidence, comprising 279 Peptide-Spectrum Matches (PSMs) with a high mean spectral angle of 0.7 when comparing against the Prosit-predicted spectrum. Moreover we see  quite high model confidence across all observations (see Figure \ref{fig:pygl_validation}). In liver metabolism, Ser15 acts as the central "on/off" switch for the enzyme; its phosphorylation by phosphorylase kinase (PHK) converts the inactive \textit{phosphorylase b} into the active \textit{phosphorylase a}, thereby driving the rate-limiting step of glycogenolysis—the breakdown of glycogen into glucose-1-phosphate \cite{Zois2022}.
 
 Although PYGL is primarily known as the hepatic isoform, recent studies have highlighted its critical role in the "glycogen shunt" of cancer cells, particularly in glioblastoma (GBM). Under hypoxic conditions, tumor cells frequently undergo "isoform switching" or upregulate PYGL to utilize glycogen stores as a survival mechanism \cite{Favaro2012}. High expression of PYGL has been linked to poor prognosis in glioma patients and is strongly associated with hypoxia-inducible factor (HIF) signatures \cite{Zois2022, PURE_Ulster}. 
 
