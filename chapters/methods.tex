@@ -78,7 +78,7 @@ depending on the labeling state of the sample.
 
 
 
-\begin{figure}[ht]
+\begin{figure}[H][ht]
     \centering
     %\includegraphics[width=\textwidth]{architecture_diagram.pdf}
     \includegraphics{plots/methods/architecture_tmt.png}
@@ -99,7 +99,7 @@ For the training and evaluation of the adapted model, a robust dataset was curat
 
 The fine-tuning process utilizes two distinct datasets to adapt the model to TMT-labeled spectra while maintaining performance on unlabeled data (see Figure \ref{fig:datasplits}).
 
-\begin{figure}[htbp]
+\begin{figure}[H][htbp]
     \centering
     % width=\textwidth sorgt dafür, dass das Bild exakt so breit wie der Text ist.
     % Mit 0.8\textwidth kannst du es etwas kleiner machen, falls es zu wuchtig wirkt.
@@ -139,7 +139,7 @@ The non-TMT reference data is partitioned as follows:
 
 \subsection{Modification Distribution and Heatmap Analysis}
 To evaluate the coverage of the training data, we visualized the modification density across different residues. This approach was closely oriented towards the \textit{ModaNovo} framework to ensure comparability and systematic evaluation of PTM-residue pairs \cite{KlaprothAndrade2025}.
-\begin{figure}[htbp]
+\begin{figure}[H][htbp]
     \centering
     % Erster Plot (TMT)
     \begin{subfigure}{\textwidth}

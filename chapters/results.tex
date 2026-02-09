@@ -11,7 +11,7 @@ To evaluate the predictive confidence, precision-coverage curves were generated 
 
 The evaluation follows a peptide-centric approach: a single ground truth peptide contributes to the curves of all modifications it contains. For instance, a peptide sequence such as \enquote{[+229.997]-PEPT[+79.966]IDEK[+14.016]} is included in both the precision-coverage curve for phosphorylated threonine (T[+79.966]) and monomethylated lysine (K[+14.016]). In all subsequent analyses, the performance on unmodified peptides (light grey in Figure \ref{fig:PCfacets}) serves as a reference baseline.
 
-\begin{figure}[htbp]
+\begin{figure}[H][htbp]
     \centering
     \includegraphics[width=0.8\textwidth]{plots/results/PCfacets.png}
     \caption{Precision-coverage curves at the peptide level across different PTMs. PTM types (Acetylation, Citrullination (Citrull\_deamid), Monomethylation, OGalNAc/OGlcNAc (O-Glyco), Oxidation, Phosphorylation, Pyro-glu, and Ubiquitination) are shown in the different panels. Colors represent the performance of the final model on TMT-labeled (orange) and non-TMT (blue) spectra. Unmodified peptides are shown in light grey for comparison.}
@@ -91,7 +91,7 @@ The predicted sequences for unmodified peptides were aligned against the human r
 Out of the total predictions, 1.34 million peptides aligned perfectly with the reference proteome, while 0.62 million and 0.8 million sequences exhibited one and two mismatches, respectively.
 
 
-\begin{figure}[htbp]
+\begin{figure}[H][htbp]
     \centering
     \includegraphics[width=0.80\textwidth]{plots/results/DeNovo_Glioma_TMT_Results.png}
     \caption{Cumulative alignment of \textit{de novo} predictions to the human reference proteome across confidence score thresholds. The plot illustrates the proportion of sequences matching the reference with zero (blue), up to one (orange), and up to two (green) amino acid substitutions. The segments between the curves represent peptides with specific mismatch counts, potentially accounting for Single Nucleotide Polymorphisms (SNPs) or technical sequencing errors. The increasing trend demonstrates the correlation between the model's self-reported confidence and sequence accuracy.}
@@ -104,7 +104,7 @@ The upward trend of the  bars in Figure \ref{fig:alignment_results} confirms tha
 
 To further investigate the reliability across different chemical states, the precision of the predictions was stratified by modification type and ranked by confidence (PSM Rank). In this analysis, the "Rank 1" prediction represent the highest-confidence spectrum.
 
-\begin{figure}[htbp]
+\begin{figure}[H][htbp]
     \centering
     \includegraphics[width=0.85\textwidth]{plots/results/rank_precision_offby0_stratified.png}
     \caption{Proportion of perfectly aligned PSMs stratified by modification type and ranked by confidence score.}
@@ -129,7 +129,7 @@ A primary objective of this study was to evaluate the extent to which \textit{de
 
 The comparison of unique peptide sequences identified by both methods reveals a substantial expansion of the detectable proteome. As shown in Figure \ref{fig:unique_peps}, the \textit{de novo} approach identified approximately 40,000 unique peptides that were also found by MaxQuant, demonstrating high consistency in the "known" space. 
 
-\begin{figure}[htbp]
+\begin{figure}[H][htbp]
     \centering
     \includegraphics[width=0.7\textwidth]{plots/results/uniquePeps.png}
     \caption{Overlap of unique peptide identifications between the adpated \textit{de novo} model and MaxQuant. The model successfully recovers the majority of MQ identifications while contributing 40,000 additional unique sequences.}
@@ -165,7 +165,7 @@ The identification of these amino acid substitutions at the protein level, howev
 
 To ensure the spectral reliability of these novel identifications, we performed a validation based on spectral similarity. We compared the experimental spectra against theoretical fragment patterns using the spectral angle as a metric for similarity. This confirmed that the observed fragmentation matches the predicted pattern of the mutated sequence with high fidelity, whereas a comparison with the non-mutated, canonical sequence would result in significant mass shifts and poor spectral alignment, unless the substitution was isobaric (e.g., Leucine to Isoleucine) \cite{Gessulat2019}.
 
-\begin{figure}[htbp]
+\begin{figure}[H][htbp]
     \centering
     \includegraphics[width=\textwidth]{plots/application/snpvalidationProsit.png}
     \caption{Left: Prosit-predicted spectrum (top) and experimental spectrum
@@ -190,7 +190,7 @@ A key advantage of \textit{de novo} peptide sequencing is the ability to identif
 
 The methodology for PTM mapping involved several steps: First, all \textit{de novo} predicted peptides were aligned against the human reference proteome. We considered two distinct alignment scenarios: (1) \textit{offby\_0}, representing perfect matches where the predicted sequence (including PTMs) matches the database entry exactly, and (2) \textit{offby\_1\_snp}, allowing for a single mismatch to account for potential single nucleotide polymorphisms or sequence variants. Following alignment, the predicted modification residues were mapped to their specific positions within the protein sequence. To ensure a conservative estimate, we filtered the results to unique p-sites, aggregating redundant spectral identifications to a single site per protein.
 
-\begin{figure}[htbp]
+\begin{figure}[H][htbp]
     \centering
     \includegraphics[width=\textwidth]{plots/application/plot_offby_0_cancer.png}
     \caption{Distribution of unique phosphorylation sites identified by MaxQuant (MQ) and our  model(DNPS) for selected cancer-related proteins. The results demonstrate a significant expansion of the detectable phospho-landscape.}
@@ -217,7 +217,7 @@ Despite these findings, the high number of predicted sites (particularly the 80 
 
 While the high density of predicted sites in proteins like SRCIN1 underscores the need for further structural filtering, our pipeline successfully identified several high-confidence regulatory markers with profound biological implications. The most compelling example is the detection of phosphorylation at \textbf{Serine 15 (p-Ser15)} on the liver isoform of glycogen phosphorylase, \textbf{PYGL} (P06737).
 
-\begin{figure}[htbp]
+\begin{figure}[H][htbp]
     \centering
     \includegraphics[width=0.8\textwidth]{plots/application/PYGL_scores.png}
     \caption{Confidence distribution for the predictions validating p-Ser15 on PYGL. The identification is supported by 279 PSMs with a mean spectral angle (SA) of 0.7, indicating high reproducibility and spectral fidelity.}
