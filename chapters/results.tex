@@ -253,16 +253,27 @@ We took a quick look into the top 5 candidate cancer-related proteins frequently
 
 Despite these findings, the high number of predicted sites (particularly the 80 sites on SRCIN1) suggests that the current \textit{de novo} PTM output requires further structural filtering. The potential for false positives due to spectral noise or misassignment of mass shifts remains a challenge, necessitating more refined localized scoring in future iterations of the pipeline.
 
-While the high density of predicted sites in proteins like SRCIN1 underscores the need for further structural filtering, our pipeline successfully identified several high-confidence regulatory markers with profound biological implications. The most compelling example is the detection of phosphorylation at \textbf{Serine 15 (p-Ser15)} on the liver isoform of glycogen phosphorylase, \textbf{PYGL} (P06737).
+While the high density of predicted sites in proteins like SRCIN1 underscores the need for further structural filtering, our pipeline successfully identified several high-confidence regulatory markers. A prime example is the liver isoform of glycogen phosphorylase, \textbf{PYGL} (P06737).
+
+\begin{figure}[H][htbp]
+    \centering
+    \includegraphics[width=\textwidth]{pyglLollipop.png}
+    \caption{Distribution and frequency of identified peptide modifications along the PYGL sequence. The y-axis (log-scaled) displays spectral counts. Yellow labels indicate phosphorylation sites. Color coding: Blue (ModanovoTMT + MaxQuant consensus), Red (MaxQuant only), Green (ModanovoTMT only).}
+    \label{fig:pygl_lollipop}
+\end{figure}
+
+As illustrated in Figure \ref{fig:pygl_lollipop}, the "Lollipop" plot visualizes the sequence coverage and modification density of PYGL. The x-axis represents the amino acid sequence, while the log-scaled y-axis quantifies the spectral evidence for each site.  Notably, the green bars represent modifications exclusively identified by Modanovo-TMT, demonstrating its ability to uncover sites missed by traditional database-driven workflows. This complementarity is particularly evident in the identification of \textbf{Serine 15 (p-Ser15)}.
+
+
 
 \begin{figure}[H][htbp]
     \centering
     \includegraphics[width=0.8\textwidth]{plots/application/PYGL_scores.png}
-    \caption{Confidence distribution for the predictions validating p-Ser15 on PYGL. The identification is supported by 279 PSMs, indicating high reproducibility.}
+    \caption{Confidence distribution for the predictions validating p-Ser15 on PYGL. The identification is supported by PSMs with meaningful DNPS scores, indicating high reproducibility.}
     \label{fig:pygl_validation}
 \end{figure}
 
-The identification of p-Ser15 on PYGL is supported by substantial spectral evidence, comprising 279 Peptide-Spectrum Matches (PSMs) with a high mean spectral angle of 0.7 when comparing against the Prosit-predicted spectrum. Moreover we see  quite high model confidence across all observations (see Figure \ref{fig:pygl_validation}). In liver metabolism, Ser15 acts as the central "on/off" switch for the enzyme; its phosphorylation by phosphorylase kinase (PHK) converts the inactive \textit{phosphorylase b} into the active \textit{phosphorylase a}, thereby driving the rate-limiting step of glycogenolysis—the breakdown of glycogen into glucose-1-phosphate \cite{Zois2022}.
+The identification of p-Ser15 on PYGL is supported by substantial spectral evidence, comprising a vast amount of Peptide-Spectrum Matches (PSMs) with a high mean spectral angle of 0.7 when comparing against the Prosit-predicted spectrum. Moreover we see  quite high model confidence across all observations (see Figure \ref{fig:pygl_validation}). In liver metabolism, Ser15 acts as the central "on/off" switch for the enzyme; its phosphorylation by phosphorylase kinase (PHK) converts the inactive \textit{phosphorylase b} into the active \textit{phosphorylase a}, thereby driving the rate-limiting step of glycogenolysis—the breakdown of glycogen into glucose-1-phosphate \cite{Zois2022}.
 
 Although PYGL is primarily known as the hepatic isoform, recent studies have highlighted its critical role in the "glycogen shunt" of cancer cells, particularly in glioblastoma (GBM). Under hypoxic conditions, tumor cells frequently undergo "isoform switching" or upregulate PYGL to utilize glycogen stores as a survival mechanism \cite{Favaro2012}. High expression of PYGL has been linked to poor prognosis in glioma patients and is strongly associated with hypoxia-inducible factor (HIF) signatures \cite{Zois2022, PURE_Ulster}. 
 
