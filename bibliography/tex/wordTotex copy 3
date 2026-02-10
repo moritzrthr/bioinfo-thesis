@@ -437,24 +437,16 @@ Despite these advances, a significant gap remains regarding Tandem Mass Tag (TMT
 }
 
 
-
 @Article{Budnik2018,
-
   author  = {Budnik, B. and Levy, E. and Harmange, G. and others},
-
-  title   = {SCoPE-MS: scalable carrier-of-alkenes-based proteomics exposure monitors cell heterogeneity in 200 individual cells},
-
+  title   = {SCoPE-MS: mass spectrometry of single mammalian cells provides proteome profiles of cellular heterogeneity},
   journal = {Genome Biology},
-
   year    = {2018},
-
   volume  = {19},
-
   pages   = {161},
-
   doi     = {10.1186/s13059-018-1547-5}
-
 }
+
 
 
 
@@ -474,39 +466,8 @@ Despite these advances, a significant gap remains regarding Tandem Mass Tag (TMT
 
 
 
-@Article{Yilmaz2023,
-
-  author  = {Yilmaz, M. and Fondrie, W. and others},
-
-  title   = {De novo peptide sequencing with deep learning},
-
-  journal = {Nature Methods},
-
-  year    = {2023},
-
-  volume  = {20},
-
-  number  = {2},
-
-  pages   = {276--282},
-
-  doi     = {10.1038/s41592-022-01712-9}
-
-}
 
 
-
-@Misc{Qiao2021,
-
-  author       = {Qiao, R. and others},
-
-  title        = {Computationally efficient de novo peptide sequencing via a transformer-based model},
-
-  howpublished = {arXiv:2104.14501},
-
-  year         = {2021}
-
-}
 
 
 
@@ -549,6 +510,35 @@ Despite these advances, a significant gap remains regarding Tandem Mass Tag (TMT
   pages   = {2144--2155},
 
   doi     = {10.1021/acs.jproteome.2c00224}
+
+}
+
+@Article{Yilmaz2023,
+
+
+  author  = {Yilmaz, M. and Fondrie, W. and others},
+
+
+  title   = {De novo peptide sequencing with deep learning},
+
+
+  journal = {Nature Methods},
+
+
+  year    = {2023},
+
+
+  volume  = {20},
+
+
+  number  = {2},
+
+
+  pages   = {276--282},
+
+
+  doi     = {10.1038/s41592-022-01712-9}
+
 
 }
 
