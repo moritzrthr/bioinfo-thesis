@@ -178,7 +178,7 @@ Beyond this shared proteomic space, MQ identified approximately 30,000 peptides 
 
 \subsection{Identification of Previously Unidentified Spectra}
 
-Beyond the unique peptide identifications we looked at the spectrum level (PSMs). In the analyzed dataset, MaxQuant provided identifications for 1,510,866 spectra. Our model was able to provide high-confidence sequences for a significant portion of the remaining "dark" spectra:
+Beyond the unique peptide identifications we looked at the spectrum level (PSMs). In the analyzed dataset, MaxQuant provided identifications for 1,510,866 spectra. Modanovo-TMT was able to provide high-confidence sequences for a significant portion of the remaining "dark" spectra:
 
 \begin{itemize}
     \item \textbf{High-Confidence Matches (Score $> 0.8$):} We identified 446,290 additional spectra with a confidence score above 0.8. Based on our previous alignment validation, this score range corresponds to highly reliable peptide sequences.
@@ -209,7 +209,7 @@ To ensure the spectral reliability of these novel identifications, we performed 
     \caption{Left: Prosit-predicted spectrum (top) and experimental spectrum
 (bottom) for the reference peptide sequence YAALLK. The cartoon
 illustrates the relevant nucleotide sequence and fragment ion series assuming the reference genome allele. Right: Same as for left, but for the peptide sequence
-YAASLK predicted by our model for the same experimental spectrum. The higher degree of overlap between experimental and theoretical spectrum for the mutated peptide (right) validate the models predictipn.}
+YAASLK predicted by Modanovo-TMT for the same experimental spectrum. The higher degree of overlap between experimental and theoretical spectrum for the mutated peptide (right) validate the models predictipn.}
     \label{fig:snp_prosit_validation}
 \end{figure}
 
@@ -240,15 +240,15 @@ The statistical evaluation highlights a massive expansion of the p-site landscap
 We took a quick look into the top 5 candidate cancer-related proteins frequently identified in our p-site pipeline:
 
 \begin{itemize}
-    \item \textbf{SRCIN1 (Q9C0H9):} This protein acts as a negative regulator of SRC kinase by activating CSK, thereby inhibiting downstream signaling pathways involved in cell migration \cite{UniprotQ9C0H9}. While databases like PhosphoSitePlus indicate potential regulation via phosphorylation, our model identified a high density of p-sites (e.g., over 80 sites in certain contexts), suggesting a complex regulatory "p-code" that warrants further biochemical validation.
+    \item \textbf{SRCIN1 (Q9C0H9):} This protein acts as a negative regulator of SRC kinase by activating CSK, thereby inhibiting downstream signaling pathways involved in cell migration \cite{UniprotQ9C0H9}. While databases like PhosphoSitePlus indicate potential regulation via phosphorylation, Modanovo-TMT identified a high density of p-sites (e.g., over 80 sites in certain contexts), suggesting a complex regulatory "p-code" that warrants further biochemical validation.
     
     \item \textbf{NCOR1 (O75376):} A nuclear receptor corepressor that recruits histone deacetylases to mediate gene repression. Phosphorylation (e.g., via Akt) is known to regulate its dissociation from receptors like PPAR$\alpha$ \cite{NCOR1_PMC}. Our discovery of additional sites suggests a more nuanced control of metabolic gene activation than previously documented.
     
     \item \textbf{UBR4 (Q5T4S7):} An E3 ubiquitin-protein ligase involved in the N-degron pathway. Our data shows numerous previously uncharacterized p-sites alongside known ubiquitination sites, likely reflecting its role in orchestrating complex stress responses and protein turnover \cite{UniprotQ5T4S7}.
     
-    \item \textbf{PML (P29590):} Crucial for the formation of PML-nuclear bodies (PML-NBs), this protein is a central hub for tumor suppression. PTMs are known to regulate its scaffolding function and antiviral responses \cite{PML_PMC}. The expanded p-site map provided by our model could clarify the dynamics of PML-NB assembly in cancer cells.
+    \item \textbf{PML (P29590):} Crucial for the formation of PML-nuclear bodies (PML-NBs), this protein is a central hub for tumor suppression. PTMs are known to regulate its scaffolding function and antiviral responses \cite{PML_PMC}. The expanded p-site map provided by Modanovo-TMT could clarify the dynamics of PML-NB assembly in cancer cells.
     
-    \item \textbf{EGFR (P00533):} As a major therapeutic target in oncology, the phosphorylation of EGFR is well-studied, with over 100 known sites in specialized databases \cite{EGFR_PubChem}. Our model successfully recovered known regulatory tyrosines (e.g., Y1173) while proposing novel threonine and serine sites that may contribute to signaling crosstalk.
+    \item \textbf{EGFR (P00533):} As a major therapeutic target in oncology, the phosphorylation of EGFR is well-studied, with over 100 known sites in specialized databases \cite{EGFR_PubChem}. Modanovo-TMT successfully recovered known regulatory tyrosines (e.g., Y1173) while proposing novel threonine and serine sites that may contribute to signaling crosstalk.
 \end{itemize}
 
 Despite these findings, the high number of predicted sites (particularly the 80 sites on SRCIN1) suggests that the current \textit{de novo} PTM output requires further structural filtering. The potential for false positives due to spectral noise or misassignment of mass shifts remains a challenge, necessitating more refined localized scoring in future iterations of the pipeline.
