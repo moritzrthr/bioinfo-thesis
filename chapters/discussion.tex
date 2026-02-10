@@ -1,4 +1,5 @@
 \chapter{Discussion}
+\label{ch:discussion}
 %and prospect
 
 \section{Key Findings}
@@ -7,9 +8,7 @@ This work serves as a proof-of-concept that adapting transformer-based \textit{d
 
 
 \section{Limitations and Open Work}
-\label{sec:limitations}
 
-\subsection{Data Challenges and Domain Adaptation Strategy}
 
 Despite the advancements in adapting \textit{de novo} architectures for TMT data, several limitations persist. A primary challenge encountered during development was the relative sparsity of high-quality, large-scale TMT datasets that provide a "gold standard" ground truth. To address this, the \textbf{ProteomeTools} dataset was utilized. ProteomeTools consists of chemically synthesized peptides, providing an exceptionally reliable ground truth that is often unattainable in \textit{in vivo} datasets, where peptide identification remains subject to search engine biases \cite{Zolg2017}.
 
@@ -21,7 +20,7 @@ Additionally future refinement of the finetuning dataset could benefit from incl
 
 
 
-\subsection{Future Directions and Clinical Utility}
+\section{Future Directions and Clinical Utility}
 The application of the developed model to complex datasets, such as those derived from glioma research, represents only the initial stage of its potential utility. While current collaborations provided a foundation, the depth of biological discovery can be vastly enhanced. Beyond identifying single amino acid variants, future iterations should integrate proteogenomic workflows. By incorporating six-frame translations or patient-specific transcriptomes, thousands of currently "high-confidence" but unassigned spectra could be systematically validated \cite{Nesvizhskii2014}. This approach would facilitate the discovery of cryptic peptides, alternative splicing events, and non-canonical open reading frames (ORFs) that remain invisible to standard workflows.
 
 Furthermore, the synergy between \textit{de novo} sequencing and TMT multiplexing offers a scalable framework for precision medicine. By directly linking discovered variants to patient-specific MS3 channels, tumor heterogeneity can be characterized with unprecedented throughput. Future developments could focus on a real-time sequencing pipeline integrated with clinical metadata, transitioning mass spectrometry from a retrospective tool into a proactive platform for personalized oncology.
