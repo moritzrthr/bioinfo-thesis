@@ -123,7 +123,7 @@ The TMT-labeled dataset is partitioned as follows:
 \end{itemize}
 
 \subsection{Non-TMT Data (Replay Set)}
-To prevent catastrophic forgetting during the fine-tuning process, a diverse reference dataset of unlabeled (non-TMT) spectra is included. This "Replay Set" consists of a mixture of 80\% MultiPTM data and 20\% data from the MassIVE Knowledge Base (MassIVE-KB) \cite{Wang2018}.
+To prevent catastrophic forgetting during the fine-tuning process, a diverse reference dataset of unlabeled (non-TMT) spectra is included. This "Replay Set" consists of a mixture of 80\% MultiPTM data and 20\% data from the MassIVE Knowledge Base (MassIVE-KB) \cite{MassiveKB}.
 
 \paragraph{Dataset Statistics}
 The non-TMT reference data is partitioned as follows:
@@ -300,7 +300,7 @@ Cases involving gaps or truncations where the query extended beyond the referenc
 To substantiate the biological relevance of the \textit{de novo} predicted sequences, particularly those harboring potential amino acid substitutions, we integrated patient-specific genomic evidence. For the ClinSpect-M cohort, genomic panel sequencing data (covering approximately 500 cancer-relevant genes) was available.
 
 \paragraph{Processing of Genomic Variants}
-The genomic data, provided in annotated JSON format, was processed using the Nirvana clinical variant annotator (v3.2.3) based on the GRCh37 (hg19) genome assembly. To identify potential tumor-specific peptides and single amino acid variants (SAAVs), somatic mutations were filtered using the Variant Effect Predictor (VEP) \cite{McLaren2016}. 
+The genomic data, provided in annotated JSON format, was processed using the Nirvana clinical variant annotator (v3.2.3) \cite{Stromberg2019} based on the GRCh37 (hg19) genome assembly.  To identify potential tumor-specific peptides and single amino acid variants (SAAVs), somatic mutations were filtered using the Variant Effect Predictor (VEP) \cite{McLaren2016}. 
 
 \paragraph{Mapping and Evidence Filtering}
 For each \textit{de novo} peptide that aligned to a protein originating from the 500-gene panel with only a few mismatches, we performed a precise positional mapping. The Uniprot identifiers from the proteomic alignment were mapped to Ensembl transcript IDs used in the VEP output. 

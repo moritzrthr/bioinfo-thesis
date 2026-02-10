@@ -83,16 +83,6 @@
   doi     = {10.1021/acs.jproteome.1c00914}
 }
 
-@Article{Wang2018,
-  author  = {Wang, M. and others},
-  title   = {Assembling the community-scale human mass spectrometry knowledge base},
-  journal = {Cell Systems},
-  year    = {2018},
-  volume  = {7},
-  number  = {4},
-  pages   = {412--421},
-  doi     = {10.1016/j.cels.2018.08.004}
-}
 
 @Article{Cox2008,
   author  = {Cox, J. and Mann, M.},
@@ -232,12 +222,6 @@
   doi     = {10.1038/s41592-022-01712-9}
 }
 
-@Misc{Qiao2021,
-  author       = {Qiao, R. and others},
-  title        = {Computationally efficient de novo peptide sequencing via a transformer-based model},
-  howpublished = {arXiv:2104.14501},
-  year         = {2021}
-}
 
 @Article{Tran2017,
   author  = {Tran, N. H. and Zhang, X. and Shan, L. and others},
@@ -277,15 +261,18 @@
   note         = {Accessed: 2025-12-26},
   url          = {https://massive.ucsd.edu/ProteoSAFe/static/massive-kb-libraries.jsp}
 }
-
-@article{KlaprothAndrade2025,
-  author = {Klaproth-Andrade, D. and Bruns, Y. and Nix, C. and Gabriel, W. and Bergant, V. and Wilhelm, M. and Pichlmair, A. and Gagneur, J.},
+@Article{KlaprothAndrade2025,
+  author = {Klaproth-Andrade, D. and Bruns, Y. and Nix, C. and Gabriel, W. and Bergant, V. and Pichlmair, A. and Wilhelm, M. and Gagneur, J.},
   title = {Modanovo: A Unified Model for Post-Translational Modification-Aware de Novo Sequencing Using Experimental Spectra from In Vivo and Synthetic Peptides},
-  journal = {Molecular \& Cellular Proteomics / bioRxiv preprint},
-  year = {2024},
-  doi = {10.1101/2025.09.12.675784},
-  note = {Accessed via bioRxiv and MCP announcement}
+  journal = {Molecular \& Cellular Proteomics},
+  year = {2025},
+  volume = {25},
+  number = {2},
+  pages = {101501},
+  doi = {10.1016/j.mcpro.2025.101501},
+  note = {Originally bioRxiv preprint doi: 10.1101/2025.09.12.675784}
 }
+
 
 @Article{Deutsch2012,
   author  = {Deutsch, E. W.},
@@ -306,15 +293,23 @@
   pages   = {2825--2830}
 }
 
-@Article{Yilmaz2022,
-  author  = {Yilmaz, M. and Fondrie, W. E. and Bittremieux, B. and others},
-  title   = {De novo peptide sequencing with a transformer model},
-  journal = {Nature Methods},
-  year    = {2022},
-  volume  = {19},
-  pages   = {1109--1117},
-  doi     = {10.1038/s41592-022-01530-5}
+@InProceedings{Yilmaz2022,
+  title = 	 {De novo mass spectrometry peptide sequencing with a transformer model},
+  author =       {Yilmaz, Melih and Fondrie, William and Bittremieux, Wout and Oh, Sewoong and Noble, William S},
+  booktitle = 	 {Proceedings of the 39th International Conference on Machine Learning},
+  pages = 	 {25514--25522},
+  year = 	 {2022},
+  editor = 	 {Chaudhuri, Kamalika and Jegelka, Stefanie and Song, Le and Szepesvari, Csaba and Niu, Gang and Sabato, Sivan},
+  volume = 	 {162},
+  series = 	 {Proceedings of Machine Learning Research},
+  month = 	 {17--23 Jul},
+  publisher =    {PMLR},
+  pdf = 	 {https://proceedings.mlr.press/v162/yilmaz22a/yilmaz22a.pdf},
+  url = 	 {https://proceedings.mlr.press/v162/yilmaz22a.html},
+  abstract = 	 {Tandem mass spectrometry is the only high-throughput method for analyzing the protein content of complex biological samples and is thus the primary technology driving the growth of the field of proteomics. A key outstanding challenge in this field involves identifying the sequence of amino acids -the peptide- responsible for generating each observed spectrum, without making use of prior knowledge in the form of a peptide sequence database. Although various machine learning methods have been developed to address this de novo sequencing problem, challenges that arise when modeling tandem mass spectra have led to complex models that combine multiple neural networks and post-processing steps. We propose a simple yet powerful method for de novo peptide sequencing, Casanovo, that uses a transformer framework to map directly from a sequence of observed peaks (a mass spectrum) to a sequence of amino acids (a peptide). Our experiments show that Casanovo achieves state-of-the-art performance on a benchmark dataset using a standard cross-species evaluation framework which involves testing with spectra with never-before-seen peptide labels. Casanovo not only achieves superior performance but does so at a fraction of the model complexity and inference time required by other methods.}
 }
+
+
 
 
 
@@ -325,16 +320,6 @@
   year      = {2018}
 }
 
-@Article{Hulstaert2020,
-  author  = {Hulstaert, N. and others},
-  title   = {ThermoRawFileParser: modular, containerized thermo raw file conversion},
-  journal = {Journal of Proteome Research},
-  year    = {2020},
-  volume  = {19},
-  number  = {1},
-  pages   = {537--542},
-  doi     = {10.1021/acs.jproteome.9b00328}
-}
 
 @Article{Tyanova2016,
   author  = {Tyanova, S. and Temu, T. and Cox, J.},
@@ -347,16 +332,6 @@
   doi     = {10.1038/nprot.2016.136}
 }
 
-@Article{Cox2008,
-  author  = {Cox, J. and Mann, M.},
-  title   = {MaxQuant enables high peptide identification rates, wide dynamic range and incredibly high mass accuracy},
-  journal = {Nature Biotechnology},
-  year    = {2008},
-  volume  = {26},
-  number  = {12},
-  pages   = {1367--1372},
-  doi     = {10.1038/nbt.1511}
-}
 
 @article{Gabriel2025,
   author = {Gabriel, Wassim and Zolg, Daniel P. and Giurcoiu, Victor and others},
@@ -389,7 +364,7 @@
 
 
 @Article{Stromberg2019,
-  author  = {Stromberg, M. and others},
+  author  = {Stromberg MJ, Roy R, Lajugie J, et al.},
   title   = {Nirvana: clinical grade variant annotation of genomic error-corrected sequencing data},
   journal = {Bioinformatics},
   year    = {2019},
@@ -399,15 +374,17 @@
   doi     = {10.1093/bioinformatics/btz465}
 }
 
-@Article{McLaren2016,
-  author  = {McLaren, W. and others},
-  title   = {The Ensembl Variant Effect Predictor},
-  journal = {Genome Biology},
-  year    = {2016},
+@Article{Shen2018,
+  author  = {Shen, Jianqiao and Pagala, Vishwajeeth R. and Breuer, Alex M. and Peng, Junmin and Ma, Bin and Wang, Xusheng},
+  title   = {Spectral Library Search Improves Assignment of TMT Labeled {MS/MS} Spectra},
+  journal = {Journal of Proteome Research},
+  year    = {2018},
   volume  = {17},
-  number  = {1},
-  pages   = {122},
-  doi     = {10.1186/s13059-016-0974-4}
+  number  = {10},
+  pages   = {3527--3536},
+  doi     = {10.1021/acs.jproteome.8b00594},
+  pmid    = {30096983},
+  pmcid   = {PMC6390480}
 }
 
 @Article{Nesvizhskii2014,
@@ -422,38 +399,8 @@
 }
 
 
-@Article{Chalkley2014,
-  author  = {Chalkley, R. J. and Clauser, K. R.},
-  title   = {Modification site localization scoring: strategies and performance},
-  journal = {Molecular \& Cellular Proteomics},
-  year    = {2014},
-  volume  = {13},
-  number  = {1},
-  pages   = {301--315},
-  doi     = {10.1074/mcp.M113.031542}
-}
 
-@Article{Marx2013,
-  author  = {Marx, H. and others},
-  title   = {A large-scale assessment of peptide site localization algorithms},
-  journal = {Journal of Proteome Research},
-  year    = {2013},
-  volume  = {12},
-  number  = {12},
-  pages   = {5394--5403},
-  doi     = {10.1021/pr400762y}
-}
 
-@Article{Sadygov2004,
-  author  = {Sadygov, R. G. and Cociorva, D. and Yates, J. R.},
-  title   = {Large-scale database searching using tandem mass spectra: making the right connections},
-  journal = {Nature Methods},
-  year    = {2004},
-  volume  = {1},
-  number  = {3},
-  pages   = {195--202},
-  doi     = {10.1038/nmeth725}
-}
 
 \section{Uncovering the Dark Proteome: Comparison with MaxQuant}
 
@@ -489,72 +436,11 @@ The identification of these additional sequences suggests that the "dark proteom
 
 
 
-@Article{Wilhelm2014,
-  author  = {Wilhelm, M. and Schlegl, J. and Hahne, H. and et al.},
-  title   = {Mass-spectrometry-based draft of the human proteome},
-  journal = {Nature},
-  year    = {2014},
-  volume  = {509},
-  pages   = {582--587},
-  doi     = {10.1038/nature13319},
-  note    = {Context for human reference proteome validation.}
-}
-
-@Article{Yilmaz2022_Casanovo,
-  author  = {Yilmaz, M. and Gokaslan, A. and Sharan, R. and Noble, W. S.},
-  title   = {De novo peptide sequencing with a transformer-based deep learning model},
-  journal = {Nature Communications},
-  year    = {2022},
-  volume  = {13},
-  number  = {4360},
-  doi     = {10.1038/s41467-022-31989-1},
-  note    = {Discussion on beam size and isotope error ranges in Transformer architectures.}
-}
-
-@Article{TMT_Isotope_Effect,
-  author  = {Mertins, P. and et al.},
-  title   = {Reproducible workflow for high-throughput phenotyping of the human proteome},
-  journal = {Nature Protocols},
-  year    = {2018},
-  volume  = {13},
-  pages   = {1632--1661},
-  doi     = {10.1038/s41596-018-0006-9},
-  note    = {Discusses the challenges of precursor selection and isotopic interference in TMT workflows.}
-}
 
 
-@Article{Lim2021,
-  author  = {Lim, M. Y. and others},
-  title   = {Predicting the presence and localization of post-translational modifications in peptide fragment ion spectra},
-  journal = {Nature Communications},
-  year    = {2021},
-  volume  = {12},
-  number  = {1},
-  pages   = {3245},
-  doi     = {10.1038/s41467-021-23545-x}
-}
 
-@Article{Zhu2023,
-  author  = {Zhu, Y. and others},
-  title   = {Transfer learning for peptide identification in proteomics},
-  journal = {Briefings in Bioinformatics},
-  year    = {2023},
-  volume  = {24},
-  number  = {2},
-  pages   = {bbad032},
-  doi     = {10.1093/bib/bbad032}
-}
 
-@Article{Nesvizhskii2014,
-  author  = {Nesvizhskii, A. I.},
-  title   = {Proteogenomics: concepts, applications and computational strategies},
-  journal = {Nature Methods},
-  year    = {2014},
-  volume  = {11},
-  number  = {11},
-  pages   = {1114--1125},
-  doi     = {10.1038/nmeth.3144}
-}
+
 
 @Article{Zois2022,
   author  = {Zois, C. E. and others},
@@ -707,16 +593,6 @@ The identification of these additional sequences suggests that the "dark proteom
   doi     = {10.1021/acs.jproteome.9b00328}
 }
 
-@Article{Tyanova2016,
-  author  = {Tyanova, S. and Temu, T. and Cox, J.},
-  title   = {The MaxQuant computational platform for mass spectrometry-based proteomics},
-  journal = {Nature Protocols},
-  year    = {2016},
-  volume  = {11},
-  number  = {12},
-  pages   = {2301--2319},
-  doi     = {10.1038/nprot.2016.136}
-}
 
 @Article{McLaren2016,
   author  = {McLaren, W. and Gil, L. and Hunt, S. E. and others},
@@ -856,16 +732,6 @@ The identification of these additional sequences suggests that the "dark proteom
   doi     = {10.3389/fonc.2019.01208}
 }
 
-@Article{Thompson2003,
-  author  = {Thompson, A. and others},
-  title   = {Tandem mass tags: a novel quantification strategy for comparative analysis of complex protein mixtures},
-  journal = {Analytical Chemistry},
-  year    = {2003},
-  volume  = {75},
-  number  = {8},
-  pages   = {1895--1904},
-  doi     = {10.1021/ac0262560}
-}
 
 @Article{Chick2015,
   author  = {Chick, J. M. and others},
@@ -876,12 +742,4 @@ The identification of these additional sequences suggests that the "dark proteom
   number  = {12},
   pages   = {1137--1141},
   doi     = {10.1038/nmeth.3620}
-}
-
-@Article{Klaproth2024,
-  author  = {Klaproth, J. and others},
-  title   = {Modanovo: Identifying post-translational modifications with de novo peptide sequencing},
-  journal = {Nature Communications (Preprint/Expected)},
-  year    = {2024},
-  note    = {Reference to latest PTM-capable transformer models}
 }
