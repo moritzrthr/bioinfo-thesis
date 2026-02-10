@@ -63,14 +63,14 @@ Specific PTM performance highlights the model's strengths and limitations:
 
 
 
-The global performance on TMT data (AUPCC 0.89) is slightly lower than on non-TMT data (AUPCC 0.92). Besides the lack of data it could also be explained by increased spectral complexity due to the  mass shifts and altered fragmentation patterns introduced by TMT labeling. However, the model's ability to maintain high precision across a wide range of PTMs in TMT-labeled spectra confirms that it has successfully learned to interpret the chemical signatures of multiplexed proteomics data
+The global performance on TMT data (AUPCC 0.89) was slightly lower than on non-TMT data (AUPCC 0.92). Besides the lack of data it could also be explained by increased spectral complexity due to the  mass shifts and altered fragmentation patterns introduced by TMT labeling. However, the model's ability to maintain high precision across a wide range of PTMs in TMT-labeled spectra confirmed that it has successfully learned to interpret the chemical signatures of multiplexed proteomics data.
 Specific findings for TMT-labeled PTMs include.
 \begin{itemize}
     \item \textbf{Ubiquitination and Monomethylation:} Interestingly, the model performed slightly better on TMT-labeled Ubiquitination (AUPCC 0.95) compared to its non-TMT counterpart (AUPCC 0.94). For Monomethylation, the gap was even more pronounced (TMT: 0.94 vs. non-TMT: 0.82), suggesting that the systematic mass shifts provided by TMT might aid in distinguishing these specific modifications in certain contexts.
     \item \textbf{Acetylation:} Performance remained robust across both categories (TMT: 0.91 vs. non-TMT: 0.92), indicating that Acetylation is identified with high confidence regardless of the labeling strategy.
     \end{itemize}
 
-The  final precision at full coverage (e.g., 0.59 on all tmt-labeled spectra) demonstrates that the model provides a reliable foundation for uncovering biological insights in multiplexed quantitative proteomics experiments.
+The  final precision at full coverage (e.g., 0.59 on all tmt-labeled spectra) demonstrated that the model provides a reliable foundation for uncovering biological insights in multiplexed quantitative proteomics experiments.
 
 
 \section{Isotopic Sensitivity and Beam Search in TMT Data}
@@ -151,7 +151,7 @@ As shown in Figure \ref{fig:rank_precision}, most modifications follow the expec
 A notable outlier is Monomethylation. While this modification showed excellent performance in the AUPCC metrics on the test set, the proportion of perfect alignments drops more sharply with increasing rank compared to other modifications. This discrepancy suggests the absolute mass shifts or the localization of the methyl group might still lead to mismatches during genomic alignment in real-world samples.
 
 
-The alignment results demonstrate that the expanded model produces biologically plausible peptide sequences. The high correlation between the model's confidence score and the genomic match rate validates the use of these scores as a filter for discovery. This foundation allows for the exploration of spectra that remain unidentified by traditional database-driven methods, such as MaxQuant, which will be discussed in the following section.
+The alignment results demonstrated that the expanded model produces biologically plausible peptide sequences. The high correlation between the model's confidence score and the genomic match rate validates the use of these scores as a filter for discovery. This foundation allows for the exploration of spectra that remain unidentified by traditional database-driven methods, such as MaxQuant, which will be discussed in the following section.
 
 
 \section{Complementing the state of the art:MaxQuant }
