@@ -9,7 +9,7 @@ DONT START WITH THE MODEL CONVERGENCE, just put this in nicely somewhere as expl
 INCLUDE THIS:
 \subsection{Modification Distribution and Heatmap Analysis}
 To evaluate the coverage of the training data, we visualized the modification density across different residues. This approach was closely oriented towards the \textit{Modanovo} framework to ensure comparability and systematic evaluation of PTM-residue pairs \cite{KlaprothAndrade2025}.
-\begin{figure}[H][htbp]
+\begin{figure}[H] 
     \centering
     % Erster Plot (TMT)
     \begin{subfigure}{\textwidth}
@@ -49,7 +49,7 @@ The model was trained until the validation loss showed early signs of stagnation
 
 To evaluate the predictive confidence, precision-coverage curves were generated for the different PTM categories and stratified by TMT  vs non-TMT data.  The performance is quantified using the Area Under the Precision-Coverage Curve (AUPCC).
 
-\begin{figure}[H][htbp]
+\begin{figure}[H] 
     \centering
     \includegraphics[width=0.8\textwidth]{plots/results/PCfacets.png}
     \caption{Precision-coverage curves at the peptide level across different PTMs. PTM types (Acetylation, Citrullination (Citrull\_deamid), Monomethylation, OGalNAc/OGlcNAc (O-Glyco), Oxidation, Phosphorylation, Pyro-glu, and Ubiquitination) are shown in the different panels. Colors represent the performance of the final model on TMT-labeled (orange) and non-TMT (blue) spectra. Unmodified non-TMT peptides are shown in light grey for comparison.}

@@ -165,7 +165,7 @@ The fine-tuning process utilizes two distinct datasets to adapt the model to TMT
 
 
 
-\begin{figure}[H][htbp]
+\begin{figure}[H] 
 
     \centering
 
@@ -241,7 +241,7 @@ To evaluate the coverage of the training data, we visualized the modification de
 
 
 
-\begin{figure}[H][htbp]
+\begin{figure}[H] 
 
     \centering
 

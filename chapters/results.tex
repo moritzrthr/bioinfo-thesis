@@ -15,7 +15,7 @@ To demonstrate the PTM-coverage of the training data, we visualized the modifica
 
 
 
-\begin{figure}[H][htbp]
+\begin{figure}[H] 
     \centering
     % Erster Plot (TMT)
     \begin{subfigure}{\textwidth}
@@ -45,7 +45,7 @@ The model was initialized with weights from the Modanovo base, allowing it to le
 
 To evaluate the predictive confidence, precision-coverage curves were generated for different PTM categories, stratified by TMT vs. non-TMT data (Figure \ref{fig:PCfacets}). The performance is quantified using the Area Under the Precision-Coverage Curve (AUPCC), providing a robust measure of sequencing quality across varying confidence thresholds.
 
-\begin{figure}[H][htbp]
+\begin{figure}[H] 
     \centering
     \includegraphics[width=0.8\textwidth]{plots/results/PCfacets.png}
     \caption{Precision-coverage curves at the peptide level across different PTMs. PTM types are shown in the different panels. Colors represent the performance of the final model on TMT-labeled (orange) and non-TMT (blue) spectra. Unmodified non-TMT peptides are shown in light grey for comparison.}
@@ -87,7 +87,7 @@ Furthermore, while literature for models like Casanovo suggests that increasing 
 
 The optimization process led to a stepwise improvement in all global metrics (see Table \ref{tab:config_comparison}). The global AUPCC increased from 0.8746 (Config0) to 0.8817 (ISO) and reached its peak at 0.8988 in the FINAL configuration. Notably, the most meaningful breakthrough occurred in the jump to the FINAL configuration, where the global precision at full coverage rose from 0.5726 to 0.6146.
 
-\begin{table}[htbp]
+\begin{table} 
 \centering
 \caption{Comparison of model performance across different configurations.}
 \label{tab:config_comparison}
@@ -125,7 +125,7 @@ The predicted sequences for unmodified peptides were aligned against the human r
 Out of the total predictions, 1.34 million peptides aligned perfectly with the reference proteome, while 0.62 million and 0.8 million sequences exhibited one and two mismatches, respectively.
 
 
-\begin{figure}[H][htbp]
+\begin{figure}[H] 
     \centering
     \includegraphics[width=0.80\textwidth]{plots/results/DeNovo_Glioma_TMT_Results.png}
     \caption{Cumulative alignment of \textit{de novo} predictions to the human reference proteome across confidence score thresholds. The plot illustrates the proportion of sequences matching the reference with zero (blue), up to one (orange), and up to two (green) amino acid substitutions. The segments between the curves represent peptides with specific mismatch counts, potentially accounting for Single Nucleotide Polymorphisms (SNPs) or technical sequencing errors. The increasing trend demonstrates the correlation between the model's self-reported confidence and sequence accuracy.}
@@ -138,7 +138,7 @@ In addition to proteome alignment, the plausibility of the  predictions was stre
 
 To further investigate the reliability across different chemical states, the precision of the predictions was stratified by modification type and ranked by confidence (PSM Rank). In this analysis, the "Rank 1" prediction represent the highest-confidence spectrum.
 
-\begin{figure}[H][htbp]
+\begin{figure}[H] 
     \centering
     \includegraphics[width=0.85\textwidth]{plots/results/rank_precision_offby0_stratified.png}
     
@@ -162,7 +162,7 @@ A primary objective of this study was to evaluate the extent to which \textit{de
 
 The comparison of unique peptide sequences identified by both methods reveals a substantial expansion of the detectable proteome. As shown in Figure \ref{fig:unique_peps}, the \textit{de novo} approach identified approximately 40,000 unique peptides that were also found by MaxQuant, demonstrating high consistency in the "known" space. 
 
-\begin{figure}[H][htbp]
+\begin{figure}[H] 
     \centering
     \includegraphics[width=0.7\textwidth]{plots/results/uniquePeps.png}
     \caption{Overlap of unique peptide identifications between the adpated \textit{de novo} model and MaxQuant. The model successfully recovers the majority of MQ identifications while contributing 40,000 additional unique sequences.}
@@ -203,7 +203,7 @@ The identification of these amino acid substitutions at the protein level, howev
 
 To ensure the spectral reliability of these novel identifications, we performed a validation based on spectral similarity. We compared the experimental spectra against theoretical fragment patterns using the spectral angle as a metric for similarity. This confirmed that the observed fragmentation matches the predicted pattern of the mutated sequence with high fidelity, whereas a comparison with the non-mutated, canonical sequence would result in considerable mass shifts and poor spectral alignment, unless the substitution was isobaric (e.g., Leucine to Isoleucine) \cite{Gessulat2019}, as shown in Figure \ref{fig:snp_prosit_validation}.
 
-\begin{figure}[H][htbp]
+\begin{figure}[H] 
     \centering
     \includegraphics[width=\textwidth]{plots/application/snpvalidationProsit.png}
     \caption{Left: Prosit-predicted spectrum (top) and experimental spectrum
@@ -228,7 +228,7 @@ A key advantage of \textit{de novo} peptide sequencing is the ability to identif
 
 The methodology for PTM mapping involved several steps: First, all \textit{de novo} predicted peptides were aligned against the human reference proteome. We considered two distinct alignment scenarios: (1) \textit{offby\_0}, representing perfect matches where the predicted sequence (including PTMs) matches the database entry exactly, and (2) \textit{offby\_1\_snp}, allowing for a single mismatch to account for potential single nucleotide polymorphisms or sequence variants. Following alignment, the predicted modification residues were mapped to their specific positions within the protein sequence. To ensure a conservative estimate, we filtered the results to unique p-sites, aggregating redundant spectral identifications to a single site per protein.
 
-\begin{figure}[H][htbp]
+\begin{figure}[H] 
     \centering
     \includegraphics[width=\textwidth]{plots/application/plot_offby_0_cancer.png}
     \caption{Distribution of unique phosphorylation sites identified by MaxQuant (MQ) and our  model(DNPS) for selected cancer-related proteins. The results demonstrate a meaningful expansion of the detectable phospho-landscape.}
@@ -255,7 +255,7 @@ Despite these findings, the high number of predicted sites (particularly the 80 
 
 While the high density of predicted sites in proteins like SRCIN1 underscores the need for further structural filtering, our pipeline successfully identified several high-confidence regulatory markers. A prime example is the liver isoform of glycogen phosphorylase, \textbf{PYGL} (P06737).
 
-\begin{figure}[H][htbp]
+\begin{figure}[H] 
     \centering
     \includegraphics[width=\textwidth]{plots/application/pyglLollipop.png}
     \caption{Distribution and frequency of identified peptide modifications along the PYGL sequence. The y-axis (log-scaled) displays spectral counts. Yellow labels indicate phosphorylation sites. Color coding: Blue (ModanovoTMT + MaxQuant consensus), Red (MaxQuant only), Green (ModanovoTMT only).}
@@ -266,7 +266,7 @@ As illustrated in Figure \ref{fig:pygl_lollipop}, the "Lollipop" plot visualizes
 
 
 
-\begin{figure}[H][htbp]
+\begin{figure}[H] 
     \centering
     \includegraphics[width=0.8\textwidth]{plots/application/PYGL_scores.png}
     \caption{Confidence distribution for the predictions validating p-Ser15 on PYGL. The identification is supported by PSMs with meaningful DNPS scores, indicating high reproducibility.}
