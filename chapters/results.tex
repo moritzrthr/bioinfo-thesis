@@ -75,7 +75,7 @@ The  final precision at full coverage (e.g., 0.59 on all tmt-labeled spectra) de
 
 \section{Isotopic Sensitivity and Beam Search in TMT Data}
 
-A critical challenge identified during the evaluation of TMT-labeled data was the increased frequency of non-monoisotopic precursor selection. In TMT multiplexed samples, the high density of ions and the chemical labeling itself often lead to a shift where the instrument triggers fragmentation on an isotopic peak rather than the monoisotopic mass. To address this, the model configuration was iteratively optimized.
+A critical challenge identified during the evaluation of TMT-labeled data was the increased frequency of non-monoisotopic precursor selection. In TMT multiplexed samples, the high density of ions and the chemical labeling itself often lead to a shift where the instrument triggers fragmentation on an isotopic peak rather than the monoisotopic mass \cite{Jow2014}. To address this, the model configuration was iteratively optimized.
 
 The isotope error range serves as a corrective buffer during inference for misassigned precursor masses — a frequent artifact where the mass spectrometer selects a $^{13}C$ isotope peak instead of the monoisotopic mass.
 The initial baseline configuration (Config0) utilized a restrictive isotope error range of $0,1$, which often forced the model to strictly adhere to the theoretical monoisotopic mass, leading to sequence errors when the precursor mass was incorrectly assigned by the instrument. 

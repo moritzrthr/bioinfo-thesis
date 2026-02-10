@@ -200,7 +200,7 @@ To evaluate the practical utility and robustness of Modanovo-TMT in a real-world
 
 \subsection{Experimental Dataset: The ClinSpect-M Glioma Cohort}
 
-Modanovo-TMT was applied on an unpublished clinical dataset provided by the Kusterlab [refernce tbd]. This cohort comprises approximately 300 Glioma patient samples, representing a diverse spectrum of tumor grades and molecular subtypes like Astrocytoma, Oligodendroglioma, and Glioblastoma. 
+Modanovo-TMT was applied on an unpublished clinical dataset provided by the Kusterlab \cite{KusterLab2026}. This cohort comprises approximately 300 Glioma patient samples, representing a diverse spectrum of tumor grades and molecular subtypes like Astrocytoma, Oligodendroglioma, and Glioblastoma. 
 
 \subsection{Data Acquisition and Large-Scale Preprocessing}
 
@@ -240,7 +240,7 @@ To validate the biological origin of the predicted \textit{de novo} sequences an
 \paragraph{Mass-Spectrometric Ambiguities and Encoding Strategy}
 A fundamental challenge in de novo peptide sequencing is the existence of isobaric or near-isobaric amino acid residues. 
 
-Since deep learning models primarily operate on mass-to-charge ratios ($m/z$) and the resulting mass differences, they essentially identify mass shifts rather than unique chemical identities \cite{Muth2012}.
+Since deep learning models primarily operate on mass-to-charge ratios ($m/z$) and the resulting mass differences, they essentially identify mass shifts rather than unique chemical identities.
 While transformer-based architectures can theoretically also learn to consider aminoacid context when mass shifts overlap, this still remains unevaluated and therefore we resolve the ambiguities. 
 
 We identified several critical ambiguities:
@@ -287,7 +287,7 @@ An alternative approach would have been the implementation of a custom substitut
 The alignment parameters were adjusted to account for the short nature of tryptic peptides. We set an E-value threshold of $2000$, as the small search space of a single peptide often results in high E-values despite perfect sequence identity. 
 Furthermore, we applied a query coverage threshold (\texttt{qcov\_hsp\_perc}) of 80\%. This constraint ensures that at least 80\% of the \textit{de novo} predicted sequence aligns with the database entry, thereby filtering out spurious, short-match alignments.
 
-Another adjustment was the deactivation of composition-based statistics (\texttt{comp\_based\_stats}). In default settings, many alignment tools (such as BLAST) adjust the scoring matrices based on the amino acid composition of the sequences being compared to account for biased distributions \cite{Altschul1997}. However, in the context of \textit{de novo} sequencing, where sequences are often short, these statistics can lead to score inflation or, conversely, penalize short but biologically valid matches \cite{Kersey2004}. 
+Another adjustment was the deactivation of composition-based statistics (\texttt{comp\_based\_stats}). In default settings, many alignment tools (such as BLAST) adjust the scoring matrices based on the amino acid composition of the sequences being compared to account for biased distributions \cite{Altschul2001}. However, in the context of \textit{de novo} sequencing, where sequences are often short, these statistics can lead to score inflation or, conversely, penalize short but biologically valid matches \cite{Frank2005}. 
 
 \paragraph{Post-Alignment Filtering and SNP Analysis}
 The resulting alignments were further enriched to identify Single Nucleotide Polymorphisms (SNPs) and truncation events. To account for sequences extending beyond protein termini or alignment gaps, the full query and target sequences were retrieved. 
@@ -327,7 +327,7 @@ To ensure the reliability of the identified p-sites, we had a look at the eviden
     \item \textbf{Site Redundancy:} Number of supporting Peptide-Spectrum Matches (PSMs) and overlapping sequences from alternative cleavage events.
     \item \textbf{Quality Metrics:} \textit{De novo} confidence scores for the PSMs and the alignment query coverage.
     \item \textbf{Cross-Platform Consistency:} Identification of "consensus sites" predicted by both MaxQuant and \textit{ModanovoTMT}.
-    \item \textbf{Literature Comparison:} Cross-referencing mapped positions with previous studies and databases like PhosphoSitePlus \cite{Hornbeck2015}.
+    \item \textbf{Literature Comparison:} Cross-referencing mapped positions with previous studies.
 \end{itemize}
 
 \section{Spectral Evidence and Intensity Prediction}
@@ -344,7 +344,7 @@ To quantify the similarity between the experimental spectrum and a theoretical p
 where $\mathbf{u}$ represents the vector of intensities from the experimental spectrum and $\mathbf{v}$ the predicted intensities. A value of $1$ indicates a perfect match, while $0$ indicates no similarity.
 
 \subsection{Intensity Prediction via Koina and Prosit}
-Since TMT labeling and various PTMs notably alter fragmentation energy and peak intensities, we utilized the \texttt{Prosit\_2024\_intensity\_PTMs\_gl} model, accessed via the Koina federated prediction service \cite{Gessulat2019, Wilhelm2024}. This deep learning model is specifically trained to handle TMT-labeled peptides and a wide array of PTMs.
+Since TMT labeling and various PTMs notably alter fragmentation energy and peak intensities, we utilized the \texttt{Prosit\_2024\_intensity\_PTMs\_gl} model, accessed via the Koina federated prediction service \cite{Gessulat2019, Lautenbacher2024, Gabriel2025}. This deep learning model is specifically trained to handle TMT-labeled peptides and a wide array of PTMs.
 
 \paragraph{Implementation Workflow}
 For each high-scoring \textit{de novo} peptide, the predicted sequence (including modifications) was converted into the standardized Unimod format. These strings were sent to the Koina API along with the experimental parameters, specifically setting the Collision Energy (CE) to 32 to match the Orbitrap acquisition settings. The resulting theoretical intensities for b- and y-ions were then used to calculate the spectral angle $SA$. This step ensures that our discoveries are not only biologically plausible but also physically consistent with the raw mass spectrometric data.

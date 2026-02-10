@@ -358,16 +358,34 @@
   doi     = {10.1038/nbt.1511}
 }
 
-@Article{Altschul1990,
-  author  = {Altschul, S. F. and Gish, W. and Miller, W. and Myers, E. W. and Lipman, D. J.},
-  title   = {Basic local alignment search tool},
-  journal = {Journal of Molecular Biology},
-  year    = {1990},
-  volume  = {215},
-  number  = {3},
-  pages   = {403--410},
-  doi     = {10.1016/S0022-2836(05)80360-2}
+@article{Gabriel2025,
+  author = {Gabriel, Wassim and Zolg, Daniel P. and Giurcoiu, Victor and others},
+  title = {Learning the Unseen: Data-Augmented Deep Learning for PTM Discovery with Prosit-PTM},
+  journal = {bioRxiv},
+  year = {2025},
+  doi = {10.1101/2025.11.07.687302},
+  url = {https://www.biorxiv.org/content/10.1101/2025.11.07.687302v1}
 }
+
+@misc{KusterLab2026,
+  author = {Kusterlab},
+  title = {Chair of Proteomics and Bioanalytics, TUM},
+  year = {2026},
+  url = {https://www.mls.ls.tum.de/proteomics/},
+  note = {Unpublished clinical glioma dataset}
+}
+@article{Altschul2001,
+  author = {Altschul, Stephen F. and Madden, Thomas L. and Sch{\"a}ffer, Alejandro A. and Zhang, Jinghui and Zhang, Zheng and Miller, Webb and Lipman, David J.},
+  title = {Gapped BLAST and PSI-BLAST: a new generation of protein database search programs},
+  journal = {Nucleic Acids Research},
+  year = {2001},
+  volume = {25},
+  number = {17},
+  pages = {3389--3402},
+  doi = {10.1093/nar/25.17.3389},
+  note = {Describes E-value behavior for short queries, the impact of small search spaces, and the use of composition-based statistics in BLAST}
+}
+
 
 
 @Article{Stromberg2019,
@@ -470,17 +488,6 @@ Summing these categories, the \textit{de novo} approach provides plausible seque
 The identification of these additional sequences suggests that the "dark proteome" in these glioma samples is rich in biological variants. The high number of high-confidence predictions that do not perfectly match the database entries—especially those with slight precursor shifts—points towards the presence of non-canonical protein isoforms. In the following sections, we will categorize these findings into specific biological phenomena, namely novel phosphorylation sites (p-sites) and single nucleotide polymorphisms (SNPs).
 
 
-@Article{Altschul1990,
-  author  = {Altschul, S. F. and Gish, W. and Miller, W. and Myers, E. W. and Lipman, D. J.},
-  title   = {Basic local alignment search tool},
-  journal = {Journal of Molecular Biology},
-  year    = {1990},
-  volume  = {215},
-  number  = {3},
-  pages   = {403--410},
-  doi     = {10.1016/S0022-2836(05)80360-2},
-  note    = {Standard reference for BLAST-based sequence alignment.}
-}
 
 @Article{Wilhelm2014,
   author  = {Wilhelm, M. and Schlegl, J. and Hahne, H. and et al.},
@@ -602,16 +609,6 @@ The identification of these additional sequences suggests that the "dark proteom
   doi     = {10.1002/pmic.201400153}
 }
 
-@Article{Gessulat2019,
-  author  = {Gessulat, S. and Schmidt, T. and Zolg, D. P. and others},
-  title   = {Prosit: proteome-wide prediction of peptide tandem mass spectra by deep learning},
-  journal = {Nature Methods},
-  year    = {2019},
-  volume  = {16},
-  number  = {6},
-  pages   = {509--518},
-  doi     = {10.1038/s41592-019-0426-7}
-}
 
 @Article{Pertosi2016,
   author  = {Pertosi, M. and Ovelleiro, D. and others},
@@ -754,13 +751,89 @@ The identification of these additional sequences suggests that the "dark proteom
   doi     = {10.1038/s41592-019-0426-7}
 }
 
-@Article{Wilhelm2024,
-  author  = {Wilhelm, M. and others},
-  title   = {Koina: A democratic ecosystem for model-based proteomics},
-  journal = {Nature Methods},
-  year    = {2024},
-  note    = {Software available via wilhelmlab.org}
+@article{Lautenbacher2024,
+  author = {Lautenbacher, L. and Yang, K. L. and Kockmann, T. and Panse, C. and Chambers, M. and Kahl, E. and Yu, F. and Gabriel, W. and Bold, D. and Schmidt, T. and Li, K. and MacLean, B. and Nesvizhskii, A. I. and Wilhelm, M.},
+  title = {Koina: Democratizing machine learning for proteomics research},
+  journal = {Nature Communications},
+  year = {2025},
+  volume = {16},
+  number = {1},
+  pages = {9933},
+  doi = {10.1038/s41467-025-64870-5},
+  note = {Preprint: bioRxiv 2024.06.01.596953; Software: koina.wilhelmlab.org}
 }
+
+
+@article{Jow2014,
+  author = {Jow, Howsun and Boys, Richard J. and Wilkinson, Darren J.},
+  title = {Bayesian identification of protein differential expression in multi-group isobaric labelled mass spectrometry data},
+  journal = {arXiv},
+  year = {2014},
+  volume = {abs/1407.6519},
+  note = {Discusses challenges in interpreting isotopic envelopes in isobaric (e.g., TMT) labelled proteomics data including monoisotopic peak estimation and misassignment},
+  url = {https://arxiv.org/abs/1407.6519}
+}
+
+@article{ProPeptMT2025,
+  author = {Zhai, Jixiu and Lu, Tianchi and Zhong, Haitian and Xu, Ziyang and Liu, Yuhuan and Wang, Xueying and Huang, Dan},
+  title = {ProPept-MT: A multi-task deep learning framework for peptide property prediction},
+  journal = {International Journal of Molecular Sciences},
+  year = {2025},
+  volume = {25},
+  number = {13},
+  pages = {7237},
+  doi = {10.3390/ijms25137237},
+  note = {Multi-task model architecture with separate output layers for different peptide feature predictions (e.g., RT, IM, intensity).}
+}
+
+@article{Frank2005,
+  author = {Frank, Ari M. and Pevzner, Pavel A.},
+  title = {PepNovo: De Novo Peptide Sequencing via Probabilistic Network Modeling},
+  journal = {Analytical Chemistry},
+  year = {2005},
+  volume = {77},
+  number = {4},
+  pages = {964--973},
+  doi = {10.1021/ac048788h}
+}
+
+
+@article{Ma2003,
+  author = {Ma, Bin and Zhang, Kaizhong and Hendrie, Chris and Liang, Chengzhi and Li, Ming and Doherty-Kirby, Alison and Lajoie, Gilles},
+  title = {PEAKS: powerful software for peptide de novo sequencing by tandem mass spectrometry},
+  journal = {Rapid Communications in Mass Spectrometry},
+  year = {2003},
+  volume = {17},
+  number = {20},
+  pages = {2337--2342},
+  doi = {10.1002/rcm.1196}
+}
+
+
+@article{Ma2015Novor,
+  author = {Ma, Bin},
+  title = {Novor: real-time peptide de novo sequencing software},
+  journal = {Journal of the American Society for Mass Spectrometry},
+  year = {2015},
+  volume = {26},
+  number = {11},
+  pages = {1885--1894},
+  doi = {10.1007/s13361-015-1204-0}
+}
+
+@article{UniProt2023,
+  author = {{The UniProt Consortium}},
+  title = {UniProt: the Universal Protein Knowledgebase in 2023},
+  journal = {Nucleic Acids Research},
+  year = {2023},
+  volume = {51},
+  number = {D1},
+  pages = {D523--D531},
+  doi = {10.1093/nar/gkac1052}
+}
+
+
+
 
 @Article{Mertins2016,
   author  = {Mertins, P. and others},
