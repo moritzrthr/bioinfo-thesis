@@ -344,7 +344,7 @@ To quantify the similarity between the experimental spectrum and a theoretical p
 where $\mathbf{u}$ represents the vector of intensities from the experimental spectrum and $\mathbf{v}$ the predicted intensities. A value of $1$ indicates a perfect match, while $0$ indicates no similarity.
 
 \subsection{Intensity Prediction via Koina and Prosit}
-Since TMT labeling and various PTMs significantly alter fragmentation energy and peak intensities, we utilized the \texttt{Prosit\_2024\_intensity\_PTMs\_gl} model, accessed via the Koina federated prediction service \cite{Gessulat2019, Wilhelm2024}. This deep learning model is specifically trained to handle TMT-labeled peptides and a wide array of PTMs.
+Since TMT labeling and various PTMs notably alter fragmentation energy and peak intensities, we utilized the \texttt{Prosit\_2024\_intensity\_PTMs\_gl} model, accessed via the Koina federated prediction service \cite{Gessulat2019, Wilhelm2024}. This deep learning model is specifically trained to handle TMT-labeled peptides and a wide array of PTMs.
 
 \paragraph{Implementation Workflow}
 For each high-scoring \textit{de novo} peptide, the predicted sequence (including modifications) was converted into the standardized Unimod format. These strings were sent to the Koina API along with the experimental parameters, specifically setting the Collision Energy (CE) to 32 to match the Orbitrap acquisition settings. The resulting theoretical intensities for b- and y-ions were then used to calculate the spectral angle $SA$. This step ensures that our discoveries are not only biologically plausible but also physically consistent with the raw mass spectrometric data.
