@@ -525,53 +525,33 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     }
 
     function calculateTicks(maxY) {
-        // Generate human-friendly ticks for a LOG scale
-        // Include 0 and a sequence like 1,2,5,10,20,50,100,... up to a little above maxY
-        const base = [1,2,5];
-        const ticks = [0];
-        const maxTarget = Math.max(1, maxY);
-        const maxPow = Math.ceil(Math.log10(maxTarget));
-
-        for (let p = 0; p <= maxPow; p++) {
-            const mul = Math.pow(10, p);
-            for (let b = 0; b < base.length; b++) {
-                const v = base[b] * mul;
-                if (v <= Math.ceil(maxTarget * 1.1)) ticks.push(v);
-            }
+        if (maxY <= 1) return [1];
+        let ticks = [];
+        let val = 1;
+        while (val <= maxY) {
+            ticks.push(val);
+            val *= 10;
         }
-
-        // Ensure the top tick is at least slightly above maxY
-        const top = ticks.reduce((a,b)=>Math.max(a,b), 0);
-        if (top < maxY) ticks.push(Math.ceil(maxY));
-
-        // Unique & sorted
-        return Array.from(new Set(ticks)).sort((a,b)=>a-b);
+        return ticks;
     }
 
     function renderFullChart(uid, info) {
         const seq = info.sequence;
         const totalWidth = (seq.length * AA_WIDTH) + 100; 
-
-        // 1. Calculate Grid (LOG scale)
-        const ticks = calculateTicks(Math.max(5, info.max_y));
-        const maxTick = ticks[ticks.length - 1] || 1;
-
-        // yPixel: maps a count value to a bottom-position in pixels (log scale)
-        function yPixel(val) {
-            // baseline is PADDING_BOTTOM; map values using log10(val+1) to handle zero
-            if (val <= 0) return PADDING_BOTTOM;
-            const denom = Math.log10(maxTick + 1);
-            const num = Math.log10(val + 1);
-            const frac = denom > 0 ? (num / denom) : 0;
-            return (frac * PLOT_AREA_HEIGHT) + PADDING_BOTTOM;
-        }
+        
+        // 1. Calculate Grid
+        const ticks = calculateTicks(Math.max(1, info.max_y));
+        const maxTick = ticks[ticks.length - 1];
+        const logMax = Math.log10(maxTick);
 
         // Generate Y-Axis HTML and Grid Lines HTML
-        let yAxisHtml = '<div class="y-axis-title">Number of PSMs (log)</div>';
+        let yAxisHtml = '<div class="y-axis-title">Number of PSMs (log scale)</div>';
         let gridHtml = '';
         
         ticks.forEach(val => {
-            const h = yPixel(val);
+            const logVal = Math.log10(val);
+            
+            const h = (logVal / logMax) * PLOT_AREA_HEIGHT + PADDING_BOTTOM;
             // Y-Axis Label
             yAxisHtml += `<div class="y-tick-label" style="bottom:${h}px;">${val}</div>`;
             // Grid Line (Background)
@@ -589,8 +569,8 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         let lollipopsHtml = '';
         info.peptides.forEach((pep, idx) => {
             const leftPos = (pep.center - 0.5) * AA_WIDTH;
-            // stick height must be computed using log mapping so it never exceeds plot area
-            const height = Math.max(0, yPixel(pep.total_count) - PADDING_BOTTOM);
+            const logCount = pep.total_count > 0 ? Math.log10(pep.total_count) : 0;
+            const height = (logCount / logMax) * PLOT_AREA_HEIGHT;
             
             // Gradients
             const c = pep.counts;
