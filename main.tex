@@ -27,7 +27,7 @@
 
 \input{components/glossary}
 
-\addbibresource{bibliography/literature}
+\addbibresource{bibliography/literature.bib}
 
 %\makeindex
 	%% inter line spacing
@@ -48,6 +48,7 @@
 	
 	\input{components/abstract}
 	\clearemptydoublepage t
+
 	
 	\input{components/kurzzusammenfassung}
 
@@ -69,7 +70,7 @@
 	\input{chapters/results}
 	\input{chapters/discussion}
 	
-	\printbibliography[title=References]
+	\printbibliography[title=References,heading=bibintoc]
 
 	% Abbreviations placed in back matter and added to TOC
 	\input{components/abbreviations}

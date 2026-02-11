@@ -160,7 +160,7 @@ The underlying transformer architecture was kept identical to the base Modanovo 
 
 Optimization hyperparameters were deliberately chosen to favor stable adaptation of the pre-trained weights. A low learning rate of $1 \times 10^{-6}$ was used to prevent catastrophic forgetting while still permitting gradual adjustment to TMT-induced shifts in fragmentation behavior. To further stabilize early training dynamics, a warm-up phase of two epochs was applied. Regularization was introduced via a weight decay of $1 \times 10^{-5}$ and label smoothing with a factor of 0.01, improving generalization in the presence of heterogeneous modification patterns.
 
-Training was performed using mixed-precision arithmetic with \textit{bf16} precision, reducing memory consumption and improving computational efficiency on modern GPU architectures without compromising numerical stability \cite{Micikevicius2017}. Model selection was based on validation loss, and the checkpoint with the lowest validation loss was retained for all downstream analyses.
+Training was performed using mixed-precision arithmetic with \textit{bf16} precision, reducing memory consumption and improving computational efficiency on modern GPU architectures without compromising numerical stability. Model selection was based on validation loss, and the checkpoint with the lowest validation loss was retained for all downstream analyses.
 
 
 \section{Evaluation Strategy and Performance Metrics}
