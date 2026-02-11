@@ -37,7 +37,7 @@ To demonstrate the PTM-coverage of the training data, we visualized the modifica
     \label{fig:heatmaps_combined}
 \end{figure}
 
-As shown in Figure \ref{fig:heatmaps_combined}, the compiled data set  provides high coverage for common PTMs such as Oxidation (M) and Phosphorylation (S, T, Y) we tried to keep the TMT and non TMT PTM landscape similar to not have biases in it. However like in Modanovo, there remains some optimization potential. Specifically, certain rare PTM-residue combinations or complex multiplexed modifications (e.g., Ubiquitinylation + TMT) exhibit lower spectral counts. This sparsity is a known challenge in training robust \textit{de novo} models, caused by the limited number of spectra with data base search identification.
+As shown in Figure \ref{fig:heatmaps_combined}, the compiled data set  provides high coverage for common PTMs such as Oxidation (M) and Phosphorylation (S, T, Y) we tried to keep the TMT and non TMT PTM landscape to minimize compositional bias. However like in Modanovo, there remains some optimization potential. Specifically, certain rare PTM-residue combinations or complex multiplexed modifications (e.g., Ubiquitinylation + TMT) exhibit lower spectral counts. This sparsity is a known challenge in training robust \textit{de novo} models, caused by the limited number of spectra with database search identification.
 
 \section{Modanovo-TMT confidently identifies peptides in multiplexed proteomics data}
 
@@ -132,8 +132,8 @@ Out of the total predictions, 1.34 million peptides aligned perfectly with the r
     \label{fig:alignment_results}
 \end{figure}
 
-The upward trend of the  bars in Figure \ref{fig:alignment_results} confirms that the internal scoring mechanism of the Transformer architecture effectively reflects the probability of a sequence being biologically "correct." At the highest confidence bin ($>0.95$), the vast majority of sequences are plausibel in sense that they appear in the proteome, providing a solid baseline for the subsequent analysis of modified and novel peptides.
-In addition to proteome alignment, the plausibility of the  predictions was strengthened by comparing the theoretical mass of the predicted sequences with the observed precursor $m/z$. All the peptides starting from the second bin fulfill this requirement.
+The upward trend of the  bars in Figure \ref{fig:alignment_results} confirms that the internal scoring mechanism of the Transformer architecture effectively reflects the probability of a sequence being biologically "correct." At the highest confidence bin ($>0.95$), the vast majority of sequences are plausible in the sense that they appear in the proteome, providing a solid baseline for the subsequent analysis of modified and novel peptides.
+In addition to proteome alignment, the plausibility of the  predictions was strengthened by comparing the theoretical mass of the predicted sequences with the observed precursor $m/z$ (including a tolerance window). All the peptides starting from the second bin fulfill this requirement.
 \subsection{Stratified Performance and Modification Stability}
 
 To further investigate the reliability across different chemical states, the precision of the predictions was stratified by modification type and ranked by confidence (PSM Rank). In this analysis, the "Rank 1" prediction represent the highest-confidence spectrum.
@@ -142,19 +142,19 @@ To further investigate the reliability across different chemical states, the pre
     \centering
     \includegraphics[width=0.85\textwidth]{plots/results/rank_precision_offby0_stratified.png}
     
-    \caption{Stratified precision-rank analysis of the adpated model. The plot shows the proportion of Peptide-Spectrum Matches (PSMs) achieving a perfect \textit{blastp} alignment to the human reference proteome, ranked by descending model confidence scores. Curves are stratified by modification type: unmodified or just oxidation/acetylation(green), phosphorylation (red), monomethylation (blue), and other PTMs (purple). Symbols represent specific confidence score thresholds ($\geq 0.80, 0.90, 0.95$). While performance remains high ($>90\%$) for most classes at high confidence, monomethylated peptides show a  precision drop, indicating potential challenges in mass-equivalent deconvolution or model overconfidence for this specific modification.}
+    \caption{Stratified precision-rank analysis of Modanovo-TMT. The plot shows the proportion of Peptide-Spectrum Matches (PSMs) achieving a perfect \textit{blastp} alignment to the human reference proteome, ranked by descending model confidence scores. Curves are stratified by modification type: unmodified or just oxidation/acetylation(green), phosphorylation (red), monomethylation (blue), and other PTMs (purple). Symbols represent specific confidence score thresholds ($\geq 0.80, 0.90, 0.95$). While performance remains high ($>90\%$) for most classes at high confidence, monomethylated peptides show a  precision drop, indicating potential challenges in mass-equivalent deconvolution or model overconfidence for this specific modification.}
     \label{fig:rank_precision}
 \end{figure}
 
 As shown in Figure \ref{fig:rank_precision}, most modifications follow the expected trend where decreasing confidence ranks correlate with a lower proportion of perfect alignments. Phosphorylated peptides follow the global trend closely.
 
-A notable outlier is Monomethylation. While this modification showed excellent performance in the AUPCC metrics on the test set, the proportion of perfect alignments drops more sharply with increasing rank compared to other modifications. This discrepancy suggests the absolute mass shifts or the localization of the methyl group might still lead to mismatches during genomic alignment in real-world samples.
+A notable outlier is Monomethylation. While this modification showed excellent performance in the AUPCC metrics on the test set, the proportion of perfect alignments drops more sharply with increasing rank compared to other modifications. 
 
 
 The alignment results demonstrated that the expanded model produces biologically plausible peptide sequences. The high correlation between the model's confidence score and the genomic match rate validates the use of these scores as a filter for discovery. This foundation allows for the exploration of spectra that remain unidentified by traditional database-driven methods, such as MaxQuant, which will be discussed in the following section.
 
 
-\section{Complementing the state of the art:MaxQuant }
+\section{Complementing the state of the art: MaxQuant}
 
 A primary objective of this study was to evaluate the extent to which \textit{de novo} peptide sequencing can expand the identification landscape beyond the limitations of database-driven methods. By comparing our results with those obtained via MaxQuant (MQ), we can quantify the "dark matter" of the proteome—spectra that contain high-quality information but remain unidentified by MaxQuant.
 
@@ -165,14 +165,14 @@ The comparison of unique peptide sequences identified by both methods reveals a 
 \begin{figure}[H] 
     \centering
     \includegraphics[width=0.7\textwidth]{plots/results/uniquePeps.png}
-    \caption{Overlap of unique peptide identifications between the adpated \textit{de novo} model and MaxQuant. The model successfully recovers the majority of MQ identifications while contributing 40,000 additional unique sequences.}
+    \caption{Overlap of unique peptide identifications between Modanovo-TMT and MaxQuant. The model successfully recovers the majority of MQ identifications while contributing 40,000 additional unique sequences.}
     \label{fig:unique_peps}
 \end{figure}
 
 
 Modanovo-TMT demonstrated a high degree of overlap with the established workflow, successfully identifying 40,000 unique peptides that were also present in the MQ results. This substantial intersection further confirms the model's ability to reliably recover standard peptide sequences. 
 
-Beyond this shared proteomic space, MQ identified approximately 30,000 peptides that remained exclusive to the database search. In contrast, the \textit{de novo} approach identified an additional 40,000 unique sequences that were not captured by the MQ search. These findings indicate that while both methods are complementary, the \textit{de novo} model effectively doubles the number of unique peptide candidates by uncovering sequences that lie beyond the constraints of traditional database matching, while still maintaining high sensitivity for the core proteome.
+Beyond this shared proteomic space, MQ identified approximately 30,000 peptides that remained exclusive to the database search. In contrast, the \textit{de novo} approach identified an additional 40,000 unique sequences that were not captured by the MQ search. These findings indicate that while both methods are complementary, the \textit{de novo} model effectively increases the number of unique peptide candidates by uncovering sequences that lie beyond the constraints of traditional database matching, while still maintaining high sensitivity for the core proteome.
 
 
 
@@ -195,7 +195,7 @@ The identification of these additional sequences suggests that the "dark proteom
 
 The discovery of over 670,000 previously unidentified spectra suggests that a substantial portion of the "dark proteome" in these samples arises from sequences not represented in the canonical reference database or not passing the FDR threshold. To investigate whether these unique identifications stem from biological mutations, we analyzed peptides that showed minor sequence deviations (one or two amino acids) compared to the closest database entry. To ensure a conservative and robust analysis, we employed a "clean-hit" filtering strategy: any peptide that produced a perfect match in any experimental fraction or database search was excluded, focusing our analysis solely on truly novel sequence candidates.
 
-By aligning these unique sequences back to the human proteome, we evaluated whether the observed amino acid substitutions could be explained by Single Nucleotide Polymorphisms (SNPs). A substitution was flagged as a potential SNP if the transition between the canonical and the \textit{de novo} predicted amino acid could be achieved by a single nucleotide change within the corresponding codon \cite{Wang2013}. Our analysis revealed that approximately 30\% of all single amino acid deviations and 25\% of dual amino acid deviations are directly explainable by such genomic point mutations. For instance, we identified cases where the model predicted a sequence such as \textit{PAPTIT} instead of the canonical \textit{PEDTIT}. Both mismatches in this example—Glutamate (E) to Alanine (A) and Aspartate (D) to Threonine (T)—are reachable via a single nucleotide exchange in their respective codons (e.g., GAG $\rightarrow$ GCG). 
+By aligning these unique sequences back to the human proteome, we evaluated whether the observed amino acid substitutions could be explained by Single Nucleotide Polymorphisms (SNPs). A substitution was flagged as a potential SNP if the transition between the canonical and the \textit{de novo} predicted amino acid could be achieved by a single nucleotide change within the corresponding codon \cite{Wang2013}. Our analysis revealed that approximately 30\% of all single amino acid deviations and 25\% of dual amino acid deviations are directly explainable by such genomic point mutations. For instance, we identified cases where the model predicted a sequence such as \textit{PAPTIT} instead of the canonical \textit{PETTIT}. Both mismatches in this example—Glutamate (E) to Alanine (A) and Threonine (T) to Proline (P) —are reachable via a single nucleotide exchange in their respective codons. 
 
 These findings demonstrate that the \textit{de novo} model effectively captures protein-level manifestations of genetic variability that remain invisible to standard database-search workflows \cite{Alfaro2014}. The high percentage of explainable substitutions confirms that these are not random sequencing errors, but likely reflect the actual biological diversity of the glioma samples. This capability to identify non-canonical isoforms and mutations without requiring matched genomic data highlights the transformative potential of deep learning-based sequencing for personalized proteogenomics.
 
@@ -235,7 +235,7 @@ The methodology for PTM mapping involved several steps: First, all \textit{de no
     \label{fig:p_site_distribution}
 \end{figure}
 
-The statistical evaluation highlights a massive expansion of the p-site landscape. For the \textit{offby\_0} category, a total of 224,637 unique p-sites were identified across the dataset. While MaxQuant identified 40,598 sites, the \textit{de novo} model (DNPS) contributed 103,438 sites, with an additional 180,526 sites overlapping or being newly discovered in total (see Figure \ref{fig:p_site_distribution}). In the \textit{offby\_1\_snp} category, the expansion is even more pronounced, with DNPS identifying 77,078 unique sites compared to only 4,977 by MQ. It should be noted, however, that while these numbers are promising, they likely contain a higher noise floor, as stringent false discovery rate (FDR) filtering for \textit{de novo} PTMs is still an evolving area of research.
+The statistical evaluation highlights a massive expansion of the p-site landscape.  While MaxQuant identified 40,598 sites, the \textit{de novo} model (DNPS) contributed 103,438 sites, with an additional 180,526 sites overlapping or being newly discovered in total (see Figure \ref{fig:p_site_distribution}). In the \textit{offby\_1\_snp} category, the expansion is even more pronounced, with DNPS identifying 77,078 unique sites compared to only 4,977 by MQ. It should be noted, however, that while these numbers are promising, they likely contain a higher noise floor, as stringent false discovery rate (FDR) filtering for \textit{de novo} PTMs is still an evolving area of research.
 
 We took a quick look into the top 5 candidate cancer-related proteins frequently identified in our p-site pipeline:
 
@@ -258,7 +258,7 @@ While the high density of predicted sites in proteins like SRCIN1 underscores th
 \begin{figure}[H] 
     \centering
     \includegraphics[width=\textwidth]{plots/application/pyglLollipop.png}
-    \caption{Distribution and frequency of identified peptide modifications along the PYGL sequence. The y-axis (log-scaled) displays spectral counts. Yellow labels indicate phosphorylation sites. Color coding: Blue (ModanovoTMT + MaxQuant consensus), Red (MaxQuant only), Green (ModanovoTMT only).}
+    \caption{Distribution and frequency of identified peptide modifications along the PYGL sequence. The y-axis (log-scaled) displays spectral counts. Yellow labels indicate phosphorylation sites. Color coding: Blue (Modanovo-TMT + MaxQuant consensus), Red (MaxQuant only), Green (Modanovo-TMT only).}
     \label{fig:pygl_lollipop}
 \end{figure}
 

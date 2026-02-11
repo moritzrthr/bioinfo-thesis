@@ -30,13 +30,14 @@ Specifically, the vocabulary was extended by the following residues and their co
 
 \begin{itemize}
 
-\item \textbf{K[+229.163]}: Lysine with TMT10/16 label.
+\item \textbf{K[+229.163]}: Lysine with TMT10 label.
 
-\item \textbf{[+229.163]-}: TMT10/16 label at the peptide N-terminus.
+\item \textbf{[+229.163]-}: TMT10 label at the peptide N-terminus.
+Note:  It is important to note that this state is chemically paradoxical, as both the TMT reagent and the acetylation/ubiquination/methylation process compete for the same primary amine ($\epsilon$-amino group) of the lysine side chain.The appearance of this specific mass delta in the training data is highly unusual and occurred only in very rare instances. Given that a single nitrogen atom cannot host both modifications simultaneously, these occurrences require further investigation. )
 
 \item \textbf{K[+343.206]}: Lysine with both TMT and GlyGly (ubiquitination) modification.
 
-\item \textbf{K[+271.173]}: Lysine with both TMT and Acetyl modification.
+\item \textbf{K[+271.173]}: Lysine with both TMT and Acetyl modification. 
 
 \item \textbf{K[+243.179]}: Lysine with both TMT and Methyl modification.
 \end{itemize}
@@ -149,7 +150,7 @@ To minimize noise and prevent the model from learning experimental artifacts, se
 
 
 
-The final dataset was structured into an 80/10/10 split (training, validation, and testing). To specifically address the TMT expansion, an 80/20 balance between TMT-labeled and unlabeled spectra was maintained, and all non-TMT spectra originating from TMT-specific experiments were removed to ensure label consistency. Furthermore, Unimod syntax was translated into mass-shift syntax (e.g., [+229.163]) to align with the model's vocabulary.
+The final dataset was structured into an 80/10/10 split (training, validation, and testing). To specifically address the TMT expansion, an approx. 80/20 balance between TMT-labeled and unlabeled spectra was maintained, and all non-TMT spectra originating from TMT-specific experiments were removed to ensure label consistency. Furthermore, Unimod syntax was translated into mass-shift syntax (e.g., [+229.163]) to align with the model's vocabulary.
 
 
 \section{Training Protocol}
@@ -190,7 +191,7 @@ Precision ($P$) and Coverage ($C$) at a score threshold $t$ are defined as:
     C(t) = \frac{|\text{Predictions with score} \geq t|}{|\text{Total ground truth identifications}|}
 \end{equation}
 
-A PSM is considered correct if the sequence exactly matches the ground truth identified by a database search (e.g., MaxQuant or MSFragger), treating isobaric amino acids such as Leucine, Isoleucine and PyroGlu-Q, PyroGlu-E as equivalent \cite{KlaprothAndrade2025}.
+A PSM is considered correct if the sequence exactly matches the "ground truth" identified by a database search (e.g., MaxQuant or MSFragger), treating isobaric amino acids such as Leucine, Isoleucine and PyroGlu-Q, PyroGlu-E as equivalent \cite{KlaprothAndrade2025}.
 We evaluate the precision for specific PTM-amino acid combinations. For a given modification (e.g., Phosphorylation at T), we subset the ground truth data to include all peptides containing this specific shift. This granular view ensures that the model's ability to handle complex, multiplexed PTM patterns is validated across both TMT and non-TMT backgrounds.
 
 
@@ -247,7 +248,7 @@ To validate the biological origin of the predicted \textit{de novo} sequences an
 A fundamental challenge in de novo peptide sequencing is the existence of isobaric or near-isobaric amino acid residues. 
 
 Since deep learning models primarily operate on mass-to-charge ratios ($m/z$) and the resulting mass differences, they essentially identify mass shifts rather than unique chemical identities.
-While transformer-based architectures can theoretically also learn to consider aminoacid context when mass shifts overlap, this still remains unevaluated and therefore we resolve the ambiguities. 
+While transformer-based architectures can theoretically also learn to consider amino acid context when mass shifts overlap, this still remains unevaluated and therefore we resolve the ambiguities. 
 
 We identified several critical ambiguities:
 \begin{itemize}
@@ -285,9 +286,7 @@ An alternative approach would have been the implementation of a custom substitut
     \textbf{Standard BLASTp:}   & \texttt{A V G \color{red}{-} L T S \color{red}{-} R} & \textbf{\color{red}{Mismatch}} \\
     \textbf{Our Strategy (PAM30):} & \texttt{A V G \color{blue}{B} L T S \color{blue}{Z} R} & \textbf{\color{blue}{Perfect Match*}} \\
 \end{tabular}
-\end{center}
-\textit{\footnotesize *Note: Both sequences are converted to IUPAC codes B (N/D) and Z (Q/E) prior to alignment, allowing the PAM30 matrix to score them as identical residues.}
-\vspace{1em}
+\end{center}\vspace{1em}
 
 \paragraph{Alignment Parameters}
 The alignment parameters were adjusted to account for the short nature of tryptic peptides. We set an E-value threshold of $2000$, as the small search space of a single peptide often results in high E-values despite perfect sequence identity. 
@@ -297,7 +296,7 @@ Another adjustment was the deactivation of composition-based statistics (\texttt
 
 \paragraph{Post-Alignment Filtering and SNP Analysis}
 The resulting alignments were further enriched to identify Single Nucleotide Polymorphisms (SNPs) and truncation events. To account for sequences extending beyond protein termini or alignment gaps, the full query and target sequences were retrieved. 
-The number of mismatches was calculated by considering the \texttt{B} and \texttt{Z} equivalences. For each remaining mismatch, an automated codon-lookup was performed. A mismatch was classified as "SNP-explainable" if the transition between the predicted amino acid and the reference residue could be achieved by a single nucleotide substitution in the underlying codon. 
+The number of mismatches was calculated by considering the \texttt{B} and \texttt{Z} equivalences. For each remaining mismatch, an automated codon-lookup was performed. A mismatch was classified as "SNP-explainable" if the transition between the predicted amino acid and the reference residue could be achieved by a single nucleotide substitution in the possible underlying codons. 
 
 Cases involving gaps or truncations where the query extended beyond the reference boundaries were excluded from the SNP analysis to maintain high confidence in the mutation mapping.
 
@@ -327,12 +326,12 @@ The localization of phosphorylation sites (p-sites) was performed by integrating
 
 For each predicted phosphopeptide, the unmodified sequence was first aligned to the reference proteome as described in the previous section. By utilizing the precise start and end coordinates of the alignment, we translated the local modification index (the position within the peptide) into a global protein position. This allows for a direct comparison of modification sites across different peptides and experiments, even if the underlying peptide sequences differ due to alternative cleavage or truncations.
 
-To ensure the reliability of the identified p-sites, we had a look at the evidence supporting each site taking into account the following factors:
+To ensure the reliability of the identified p-sites, we examined the evidence supporting each site taking into account the following factors:
     
 \begin{itemize}
     \item \textbf{Site Redundancy:} Number of supporting Peptide-Spectrum Matches (PSMs) and overlapping sequences from alternative cleavage events.
     \item \textbf{Quality Metrics:} \textit{De novo} confidence scores for the PSMs and the alignment query coverage.
-    \item \textbf{Cross-Platform Consistency:} Identification of "consensus sites" predicted by both MaxQuant and \textit{ModanovoTMT}.
+    \item \textbf{Cross-Platform Consistency:} Identification of "consensus sites" predicted by both MaxQuant and Modanovo-TMT.
     \item \textbf{Literature Comparison:} Cross-referencing mapped positions with previous studies.
 \end{itemize}
 
