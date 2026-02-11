@@ -90,7 +90,7 @@ depending on the labeling state of the sample. The adapted architecture is illus
 \section{Finetuning Datasets}
 
 \subsection{Data Selection and Composition}
-For the training and evaluation of Modanovo-TMT, a robust dataset was curated to ensure high-quality spectral representations. The fundamental requirement for supervised learning in this context is the availability of database searching derived sequences associated with high-resolution fragment spectra. Data were integrated from various sources, initially stored in CSV and mzML formats, and subsequently compiled into a unified Mascot Generic Format (MGF) file. This format allows for a streamlined input pipeline where the peptide sequence is explicitly linked to its corresponding spectrum \cite{Deutsch2012}.
+For the training and evaluation of Modanovo-TMT, a robust dataset was curated to ensure high-quality spectral representations. The fundamental requirement for supervised learning in this context is the availability of database searching derived sequences associated with high-resolution fragment spectra. Data were integrated from various sources, initially stored in CSV and mzML formats, and subsequently compiled into a unified Mascot Generic Format (MGF) file. This format allows for a streamlined input pipeline where the peptide sequence is explicitly linked to its corresponding spectrum \cite{MatrixScienceMGF}.
 
 
 The fine-tuning process utilizes two distinct datasets to adapt the model to TMT-labeled spectra while maintaining performance on unlabeled data (see Figure \ref{fig:datasplits}).
@@ -118,7 +118,7 @@ The utilization of these synthetic reference spectra is crucial for the de novo 
 All spectra were acquired using Thermo Scientific Orbitrap instruments (Q Exactive and Orbitrap Fusion series). Fragmentation was performed exclusively using Higher-energy Collisional Dissociation (HCD), resulting in high-resolution MS2 spectra.
 
 \paragraph{Labeling and Modifications}
-The peptides in this dataset are labeled with Tandem Mass Tags (TMT). The chemical modification manifests as a specific mass shift at the peptide N-terminus and on the $\epsilon$-amino group of all Lysine (K) residues. The exact mass shifts follow the Unimod definitions and are encoded using the ProForma standard \cite{Leis2022}.
+The peptides in this dataset are labeled with Tandem Mass Tags (TMT). The chemical modification manifests as a specific mass shift at the peptide N-terminus and on the $\epsilon$-amino group of all Lysine (K) residues. The exact mass shifts follow the Unimod definitions and are encoded using the ProForma standard \cite{LeDuc2022}.
 
 \paragraph{Dataset Statistics}
 The TMT-labeled dataset is partitioned as follows:
