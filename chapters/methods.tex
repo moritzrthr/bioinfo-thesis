@@ -104,10 +104,16 @@ The fine-tuning process utilizes two distinct datasets to adapt the model to TMT
     \caption{Composition of the fine-tuning dataset. The training dataset is dominated by TMT-labeled multi-PTM peptide-spectrum matches (82\%), supplemented by a 18\% Replay Set to preserve model robustness and recall on unlabeled spectra.}
     \label{fig:datasplits}
 \end{figure}
-
 \subsection{TMT-labeled Data}
-The primary dataset for adapting the model to isobaric labeling is derived from the PROSPECT-MultiPTM collection \cite{Zeng2024}. These data are based on the ProteomeTools project, a large-scale synthetic peptide library effort \cite{Zolg2017}.
+The primary dataset for adapting the model to isobaric labeling is derived from the PROSPECT-MultiPTM collection \cite{Zeng2024}. These data are fundamentally based on the ProteomeTools project \cite{Zolg2017}, a large-scale effort led by the research groups of Bernhard Küster and Mathias Wilhelm to create a comprehensive synthetic human proteome. 
 
+The utilization of these synthetic reference spectra is crucial for the de novo sequencing of TMT-labeled peptides for several reasons:
+
+\begin{itemize}
+    \item \textbf{Ground Truth for PTMs:} As the ProteomeTools library includes a vast array of synthetic peptides with predefined modifications, it provides the high-fidelity training data necessary for the Transformer model to accurately distinguish between diagnostic fragment ions and background noise.
+    \item \textbf{Predictable Fragmentation:} The work by Zolg, Wilhelm, and colleagues demonstrated that synthetic peptides allow for the precise modeling of fragmentation intensities. This is particularly relevant when dealing with the increased precursor mass and the altered fragmentation patterns introduced by the TMT-labeling.
+    \item \textbf{Multiplexing Adaptation:} By leveraging the PROSPECT-MultiPTM refined subset, the model can be fine-tuned to account for specific mass shifts and reporter ion interference typical for TMT-multiplexed datasets. This ensures that the de novo predictions remain robust even in complex co-isolation scenarios.
+\end{itemize}
 \paragraph{Instrumentation and Fragmentation}
 All spectra were acquired using Thermo Scientific Orbitrap instruments (Q Exactive and Orbitrap Fusion series). Fragmentation was performed exclusively using Higher-energy Collisional Dissociation (HCD), resulting in high-resolution MS2 spectra.
 
