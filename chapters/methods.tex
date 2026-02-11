@@ -33,7 +33,6 @@ Specifically, the vocabulary was extended by the following residues and their co
 \item \textbf{K[+229.163]}: Lysine with TMT10 label.
 
 \item \textbf{[+229.163]-}: TMT10 label at the peptide N-terminus.
-Note:  It is important to note that this state is chemically paradoxical, as both the TMT reagent and the acetylation/ubiquination/methylation process compete for the same primary amine ($\epsilon$-amino group) of the lysine side chain.The appearance of this specific mass delta in the training data is highly unusual and occurred only in very rare instances. Given that a single nitrogen atom cannot host both modifications simultaneously, these occurrences require further investigation. )
 
 \item \textbf{K[+343.206]}: Lysine with both TMT and GlyGly (ubiquitination) modification.
 
@@ -43,6 +42,9 @@ Note:  It is important to note that this state is chemically paradoxical, as bot
 \end{itemize}
 
 Following the Modanovo initialization protocol, the embeddings for these new tokens were initialized by averaging the embeddings of their constituent components (e.g., the base amino acid embedding and the modification-specific shift) to leverage pre-learned chemical representations \cite{KlaprothAndrade2025}.
+
+Note:  The TMT + modification states are chemically paradoxical, as both the TMT reagent and the acetylation/ubiquination/methylation process compete for the same primary amine ($\epsilon$-amino group) of the lysine side chain.The appearance of this specific mass delta in the training data is highly unusual and occurred only in very rare instances, these occurrences require further investigation (maybe an artifact). )
+
 
 \subsection{TMT Covariate Embedding}
 
