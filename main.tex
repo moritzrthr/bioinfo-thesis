@@ -38,8 +38,8 @@
 \begin{document}
 
 	\frontmatter
-	\pagestyle{plain}
-	\setcounter{page}{1}
+	% Do not show page numbers on title/cover/abstract pages; start numbering at TOC
+	\pagestyle{empty}
 	
 	
 	
@@ -47,11 +47,16 @@
 	\clearemptydoublepage 
 	
 	\input{components/abstract}
-	\clearemptydoublepage t
-
+	
+\clearemptydoublepage 
 	
 	\input{components/kurzzusammenfassung}
-
+\clearemptydoublepage 
+	% Start roman page numbering at the table of contents
+	\cleardoublepage
+	\pagestyle{plain}
+	\pagenumbering{roman}
+	\setcounter{page}{1}
 	\tableofcontents
 	\printglossary[type=\acronymtype,title=List of Abbreviations]
 	\listoffigures
