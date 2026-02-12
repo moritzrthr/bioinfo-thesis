@@ -9,9 +9,9 @@
 %\ifoot[\footertext]{\footertext\thepage} % \footertext set in INFO.TEX
 %\setkomafont{pagehead}{\normalfont\rmfamily}
 %\setkomafont{pagenumber}{\normalfont\rmfamily}
-% Configure page geometry for two-sided (book) layout.
-% Ensure the binding offset / inner margin is on the correct side.
-\usepackage[twoside,bindingoffset=12mm,inner=3.5cm,outer=2.5cm,top=3cm,bottom=3cm]{geometry}
+% Configure page geometry for digital (single-sided) layout.
+% Use symmetric margins for a digital-friendly layout.
+\usepackage[margin=3cm,top=3cm,bottom=3cm]{geometry}
 
 \usepackage{fancyhdr}
 \renewcommand*{\footrulewidth}{0pt}
@@ -24,12 +24,17 @@
 \renewcommand{\headrulewidth}{0pt}
 }
 
-% Page style for main matter: page number in outer footer (left on even, right on odd)
+% Page style for main matter: single-sided, center page number
 \fancypagestyle{main}{
 \fancyhf{}
-\fancyfoot[LE,RO]{\thepage}
+\fancyfoot[C]{\thepage}
 \renewcommand{\headrulewidth}{0pt}
 }
+
+% Prevent blank pages that are inserted for two-sided (book) layouts
+% Make \cleardoublepage and \clearemptydoublepage behave like \clearpage
+\let\cleardoublepage\clearpage
+\let\clearemptydoublepage\clearpage
 
 
 % use german characters as well
