@@ -50,7 +50,7 @@ Note:  The TMT + modification states are chemically paradoxical, as both the TMT
 
 To enable the decoder to account for systematic shifts in fragmentation patterns and physicochemical properties induced by TMT labeling, we introduce a categorical conditioning mechanism. This allows the model to explicitly distinguish between TMT-labeled and unlabeled spectra at a global level.
 
-In the baseline transformer architecture (e.g., Casanovo [Yilmaz2022]), the precursor embedding ($\mathbf{prec_emb}$) encodes the precursor ion's mass-to-charge ratio ($m/z$) and charge state ($z$) using sinusoidal positional encodings passed through dedicated linear projection layers. 
+In the baseline transformer architecture (e.g., Casanovo [Yilmaz2022]), the precursor embedding ($\mathbf{prec\_emb}$) encodes the precursor ion's mass-to-charge ratio ($m/z$) and charge state ($z$) using sinusoidal positional encodings passed through dedicated linear projection layers. 
 
 Analogous to the embedding of precursor features (precursor mass and charge), we define a
 learnable TMT-specific embedding. For each spectrum, a binary indicator
